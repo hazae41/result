@@ -23,7 +23,19 @@ export class Ok<D>  {
     return false
   }
 
+  ok() {
+    return this.inner
+  }
+
+  err() {
+    return undefined
+  }
+
   unwrap() {
+    return this.inner
+  }
+
+  unwrapOr(or: unknown) {
     return this.inner
   }
 

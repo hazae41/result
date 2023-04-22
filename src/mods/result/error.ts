@@ -1,3 +1,4 @@
+
 export class Err<E = unknown>  {
 
   constructor(
@@ -24,8 +25,20 @@ export class Err<E = unknown>  {
     return true
   }
 
+  ok() {
+    return undefined
+  }
+
+  err() {
+    return this.inner
+  }
+
   unwrap(): never {
     throw this.inner
+  }
+
+  unwrapOr<O>(or: O) {
+    return or
   }
 
   map(mapper: unknown) {
@@ -45,4 +58,3 @@ export class Err<E = unknown>  {
   }
 
 }
-

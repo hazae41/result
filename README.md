@@ -15,6 +15,7 @@ npm i @hazae41/result
 - No external dependencies
 - Rust inspired
 - wrap()/unwrap()/rewrap() conversion (async/sync)
+- ok()/err() optional chaining
 - isOk()/isErr() type guards
 - map()/tryMap() type mapping (async/sync)
 - Unit-tested
@@ -28,12 +29,25 @@ Use `unwrap()` to get the inner data if Ok or throw the inner error if Err
 ```typescript
 import { Result, Ok, Err } from "@hazae41/result"
 
-function unwrapAndIncrement(result: Result<number, Error>): number {
+function unwrapAndIncrement(result: Result<number>): number {
   return result.unwrap() + 1
 }
 
 unwrapAndIncrement(Ok.new(0)) // will return 1
 unwrapAndIncrement(Err.error("Error"))) // will throw Error("Error")
+```
+
+### Optional
+
+Use `ok()` and `err()` to get the inner value or undefined
+
+```typescript
+function maybeSlice(result: Result<string>): string | undefined {
+  return result.ok()?.slice(0, 5)
+}
+
+maybeSlice(Ok.new("hello world")) // will return "hello"
+maybeSlice(Err.error("Error")) // will return undefined 
 ```
 
 ### Safe mapping
@@ -44,7 +58,7 @@ You can easily map inner data if Ok and do nothing if Err, with support for asyn
 import { Result, Ok, Err } from "@hazae41/result"
 
 function tryIncrement(result: Result<number, Error>): Result<number> {
-  return result.tryMapSync(x => x + 1)
+  return result.mapSync(x => x + 1)
 }
 
 tryIncrement(Ok.new(0)) // Ok(1)
