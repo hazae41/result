@@ -20,6 +20,75 @@ npm i @hazae41/result
 - map()/tryMap() type mapping (async/sync)
 - Unit-tested
 
+## Why
+
+When designing a function, you never know how to return that the action failed
+
+### If you throw an error
+
+You are forced to try-catch, you also need to be aware that the function may throw
+
+```typescript
+// does this throw? I don't know
+function doSomething(): string
+
+try {
+  const result = doSomething()
+  // use result
+} catch(e: unknown) {
+  // use e (you don't know what it is)
+}
+```
+
+And the error is not typed, so you often end up checking if that's an error, and if it is not, you don't know what to do
+
+```typescript
+catch(e: unknown) {
+  if (e instanceof Error)
+    // use e
+  else
+    // what should I do now?
+}
+```
+
+### If you return an error
+
+You have to check for `instanceof Error` each time
+
+```typescript
+function doSomething(): string | Error
+
+const result = doSomething()
+
+if (result instanceof Error)
+  throw result
+
+// use result
+```
+
+### If you return undefined
+
+If you want to throw, you have to explicitly check for `undefined`, and the "burden of naming the error" is on you instead of the function you used
+
+```typescript
+function doSomething(): string | undefined
+
+const result = doSomething()
+
+if (result === undefined)
+  throw new Error(`something failed, idk`)
+
+// use result
+```
+
+And `undefined` may mean something else, for example, a function that reads from IndexedDB:
+
+```typescript
+function read<T>(key: string): T | undefined
+```
+
+Does `undefined` mean that the read failed? Or does it mean that the key doesn't exist?
+
 ## Usage
 
 ### Unwrapping
