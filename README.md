@@ -43,7 +43,9 @@ try {
 And the error is not typed, so you often end up checking if that's an error, and if it is not, you don't know what to do
 
 ```typescript
-catch(e: unknown) {
+try { 
+  // ...
+} catch(e: unknown) {
   if (e instanceof Error)
     // use e
   else
