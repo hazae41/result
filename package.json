@@ -1,0 +1,56 @@
+{
+  "type": "module",
+  "name": "@hazae41/result",
+  "version": "1.2.1",
+  "description": "Just a result for JavaScript",
+  "homepage": "https://github.com/hazae41/result",
+  "repository": "github:hazae41/result",
+  "author": "hazae41",
+  "license": "MIT",
+  "main": "./dist/cjs/index.cjs",
+  "module": "./dist/esm/index.mjs",
+  "types": "./dist/types/index.d.ts",
+  "sideEffects": false,
+  "files": [
+    "./dist/esm",
+    "./dist/cjs",
+    "./dist/types"
+  ],
+  "scripts": {
+    "build": "rimraf dist && rollup -c",
+    "test": "node ./dist/test/index.test.mjs",
+    "prepare": "npm run build"
+  },
+  "devDependencies": {
+    "@hazae41/phobos": "^1.0.10",
+    "@rollup/plugin-typescript": "^11.0.0",
+    "@types/node": "^18.13.0",
+    "rimraf": "^4.1.2",
+    "rollup": "^3.15.0",
+    "rollup-plugin-dts": "^5.2.0",
+    "rollup-plugin-node-externals": "^5.1.2",
+    "typescript": "^4.9.5"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/esm/index.mjs",
+      "require": "./dist/cjs/index.cjs"
+    }
+  },
+  "keywords": [
+    "result",
+    "rust",
+    "data",
+    "error",
+    "catching",
+    "ok",
+    "err",
+    "unwrap",
+    "wrap",
+    "typescript",
+    "esmodules",
+    "tested",
+    "unit-tested"
+  ]
+}
