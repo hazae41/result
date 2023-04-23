@@ -14,11 +14,11 @@ npm i @hazae41/result
 - 100% TypeScript and ESM
 - No external dependencies
 - Rust inspired
-- wrap()/unwrap()/rewrap() conversion (async/sync)
-- ok()/err() optional chaining
-- isOk()/isErr() type guards
-- map()/tryMap() type mapping (async/sync)
-- Unit-tested
+- `wrap()`/`unwrap()`/`rewrap()` conversion (async/sync)
+- `ok()`/`err()` optional chaining (`?.`)
+- `isOk()`/`isErr()` type guards
+- `map()`/`tryMap()` mapping (async/sync)
+- `unwrapOr()` default value
 
 ## Why
 
