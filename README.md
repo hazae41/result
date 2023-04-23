@@ -15,7 +15,7 @@ npm i @hazae41/result
 - No external dependencies
 - Similar to Rust
 - `wrap()`/`unwrap()`/`rewrap()` conversion (async/sync)
-- `ok()`/`err()` optional chaining (`?.`)
+- `ok()`/`err()` for converting to Option from `@hazae41/option` (with optional chaining `?.`)
 - `isOk()`/`isErr()` type guards
 - `map()`/`tryMap()` mapping (async/sync)
 - `unwrapOr()` default value
@@ -133,11 +133,11 @@ unwrapAndIncrement(Err.error("Error"))) // will throw Error("Error")
 
 ### Optional
 
-Use `ok()` and `err()` to get the inner value or undefined
+Use `ok()` and `err()` to get an Option, and use `inner` to get the inner value if `Some`, or `undefined` if `None`
 
 ```typescript
 function maybeSlice(result: Result<string>): string | undefined {
-  return result.ok()?.slice(0, 5)
+  return result.ok().inner?.slice(0, 5)
 }
 
 maybeSlice(Ok.new("hello world")) // will return "hello"
