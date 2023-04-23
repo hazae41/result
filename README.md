@@ -24,9 +24,11 @@ npm i @hazae41/result
 
 When designing a function, you never know how to return that the action failed
 
-### If you throw an error
+### If you throw an Error
 
-You are forced to try-catch, you also need to be aware that the function may throw
+This is the standard way of dealing with errors
+
+But you are forced to try-catch, you also need to be aware that the function may throw
 
 ```typescript
 // does this throw? I don't know
@@ -55,7 +57,9 @@ try {
 
 ### If you return an error
 
-You have to check for `instanceof Error` each time
+The advantage is that the error is explicit (you know it can fail) and typed
+
+But you have to check for `instanceof Error` each time
 
 ```typescript
 function doSomething(): string | Error
@@ -70,7 +74,15 @@ if (result instanceof Error)
 
 ### If you return undefined
 
-If you want to throw, you have to explicitly check for `undefined`, and the "burden of naming the error" is on you instead of the function you used
+The advantage is that you can use optional chaining `?.`
+
+```typescript
+function doSomething(): string | undefined
+
+const maybeSlice = doSomething()?.slice(0, 5)
+```
+
+But if you want to throw, you have to explicitly check for `undefined`, and the "burden of naming the error" is on you instead of the function you used
 
 ```typescript
 function doSomething(): string | undefined
@@ -90,6 +102,18 @@ function read<T>(key: string): T | undefined
 ```
 
 Does `undefined` mean that the read failed? Or does it mean that the key doesn't exist?
+
+### If you return a Result
+
+This is the way
+
+It's a simple object that allows you to do all of the methods above, and even more: 
+- throw with `unwrap()`
+- get the data with `ok()` or `isOk()`, with support for optional chaining `?.` 
+- get the error with `err()` or `isErr()`, with support for optional chaining `?.`
+- map the data with `map()`
+- map the error `mapErr()`
+- use default values with `unwrapOr()`
 
 ## Usage
 
