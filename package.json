@@ -2,7 +2,7 @@
   "type": "module",
   "name": "@hazae41/result",
   "version": "1.0.1",
-  "description": "Just a result for JavaScript",
+  "description": "Rust-like Result for TypeScript",
   "homepage": "https://github.com/hazae41/result",
   "repository": "github:hazae41/result",
   "author": "hazae41",

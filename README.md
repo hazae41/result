@@ -1,6 +1,6 @@
 # Result
 
-Just a result
+Rust-like Result for TypeScript
 
 ```bash
 npm i @hazae41/result
@@ -13,7 +13,7 @@ npm i @hazae41/result
 ### Current features
 - 100% TypeScript and ESM
 - No external dependencies
-- Rust inspired
+- Similar to Rust
 - `wrap()`/`unwrap()`/`rewrap()` conversion (async/sync)
 - `ok()`/`err()` optional chaining (`?.`)
 - `isOk()`/`isErr()` type guards
