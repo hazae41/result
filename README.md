@@ -108,12 +108,11 @@ Does `undefined` mean that the read failed? Or does it mean that the key doesn't
 This is the way
 
 It's a simple object that allows you to do all of the methods above, and even more: 
-- throw with `unwrap()`
-- get the data with `ok()` or `isOk()`, with support for optional chaining `?.` 
-- get the error with `err()` or `isErr()`, with support for optional chaining `?.`
-- map the data with `map()`
-- map the error `mapErr()`
-- use default values with `unwrapOr()`
+- Throw with `unwrap()`
+- Get the data and error with `ok()` and `err()`, with support for optional chaining `?.` 
+- Check the data and error with `isOk()` and `isErr()` type guards
+- Map the data and error with `map()` and `mapErr()`
+- Use a default value with `unwrapOr()`
 
 ## Usage
 
