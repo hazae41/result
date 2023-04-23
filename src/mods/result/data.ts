@@ -1,13 +1,14 @@
+import { None, Some } from "@hazae41/option"
 import { Promiseable } from "libs/promises/promises.js"
 import { Err } from "./error.js"
 
-export class Ok<D>  {
+export class Ok<T>  {
 
   constructor(
-    readonly inner: D
+    readonly inner: T
   ) { }
 
-  static new<D>(inner: D) {
+  static new<T>(inner: T) {
     return new this(inner)
   }
 
@@ -15,20 +16,12 @@ export class Ok<D>  {
    * Type guard for Ok
    * @returns 
    */
-  isOk(): this is Ok<D> {
+  isOk(): this is Ok<T> {
     return true
   }
 
   isErr(): false {
     return false
-  }
-
-  ok() {
-    return this.inner
-  }
-
-  err() {
-    return undefined
   }
 
   unwrap() {
@@ -39,12 +32,20 @@ export class Ok<D>  {
     return this.inner
   }
 
+  ok() {
+    return new Some(this.inner)
+  }
+
+  err() {
+    return new None()
+  }
+
   /**
    * Map this data into another, throwing if mapper throws
    * @param mutator 
    * @returns 
    */
-  async map<M>(mapper: (data: D) => Promiseable<M>) {
+  async map<M>(mapper: (inner: T) => Promiseable<M>) {
     return new Ok<M>(await mapper(this.inner))
   }
 
@@ -53,7 +54,7 @@ export class Ok<D>  {
    * @param mapper 
    * @returns 
    */
-  async tryMap<M>(mapper: (data: D) => Promiseable<M>) {
+  async tryMap<M>(mapper: (inner: T) => Promiseable<M>) {
     try {
       return await this.map(mapper)
     } catch (error: unknown) {
@@ -66,7 +67,7 @@ export class Ok<D>  {
    * @param mutator 
    * @returns 
    */
-  mapSync<M>(mapper: (data: D) => M) {
+  mapSync<M>(mapper: (inner: T) => M) {
     return new Ok<M>(mapper(this.inner))
   }
 
@@ -75,7 +76,7 @@ export class Ok<D>  {
    * @param mapper 
    * @returns 
    */
-  tryMapSync<M>(mapper: (data: D) => M) {
+  tryMapSync<M>(mapper: (inner: T) => M) {
     try {
       return this.mapSync(mapper)
     } catch (error: unknown) {

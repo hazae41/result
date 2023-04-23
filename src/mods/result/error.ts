@@ -1,11 +1,12 @@
+import { None, Some } from "@hazae41/option"
 
-export class Err<E = unknown>  {
+export class Err<T = unknown>  {
 
   constructor(
-    readonly inner: E
+    readonly inner: T
   ) { }
 
-  static new<E>(inner: E) {
+  static new<T>(inner: T) {
     return new this(inner)
   }
 
@@ -21,16 +22,8 @@ export class Err<E = unknown>  {
    * Type guard for Err
    * @returns 
    */
-  isErr(): this is Err<E> {
+  isErr(): this is Err<T> {
     return true
-  }
-
-  ok() {
-    return undefined
-  }
-
-  err() {
-    return this.inner
   }
 
   unwrap(): never {
@@ -39,6 +32,14 @@ export class Err<E = unknown>  {
 
   unwrapOr<O>(or: O) {
     return or
+  }
+
+  ok() {
+    return new None()
+  }
+
+  err() {
+    return new Some(this.inner)
   }
 
   map(mapper: unknown) {
