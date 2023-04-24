@@ -40,7 +40,7 @@ export namespace Result {
    */
   export function rewrap<T>(wrapper: Wrapper<T>): Result<T>
 
-  export function rewrap<D>(wrapper: Wrapper<D>) {
+  export function rewrap<T>(wrapper: Wrapper<T>) {
     try {
       return new Ok(wrapper.unwrap())
     } catch (error: unknown) {
