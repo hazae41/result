@@ -4,7 +4,7 @@ import { Err } from "./err.js"
 
 export type OkInner<O> = O extends Ok<infer T> ? T : never
 
-export class Ok<T>  {
+export class Ok<T = unknown>  {
 
   constructor(
     readonly inner: T
