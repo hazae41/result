@@ -1,5 +1,7 @@
 import { None, Some } from "@hazae41/option"
 
+export type ErrInner<E> = E extends Err<infer T> ? T : never
+
 export class Err<T = unknown>  {
 
   constructor(

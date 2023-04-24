@@ -1,6 +1,6 @@
 import { Promiseable } from "libs/promises/promises.js"
-import { Ok } from "./data.js"
-import { Err } from "./error.js"
+import { Err } from "./err.js"
+import { Ok } from "./ok.js"
 
 export type Result<D = unknown, E = unknown> =
   | Ok<D>

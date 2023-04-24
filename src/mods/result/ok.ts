@@ -1,6 +1,8 @@
 import { None, Some } from "@hazae41/option"
 import { Promiseable } from "libs/promises/promises.js"
-import { Err } from "./error.js"
+import { Err } from "./err.js"
+
+export type OkInner<O> = O extends Ok<infer T> ? T : never
 
 export class Ok<T>  {
 
