@@ -10,8 +10,12 @@ export class Ok<T = unknown>  {
     readonly inner: T
   ) { }
 
+  static void() {
+    return new this<void>(undefined)
+  }
+
   static new<T>(inner: T) {
-    return new this(inner)
+    return new this<T>(inner)
   }
 
   /**
