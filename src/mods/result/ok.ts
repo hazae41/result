@@ -102,6 +102,26 @@ export class Ok<T = unknown>  {
   }
 
   /**
+   * Get the inner value or compute a default one from the inner error
+   * @param or 
+   * @returns `this.inner` if `Ok`, `await or(this.inner)` if `Err`
+   * @throws if `await or(this.inner)` throws
+   */
+  async unwrapOrElse(or: unknown) {
+    return this.inner
+  }
+
+  /**
+   * Get the inner value or compute a default one from the inner error
+   * @param or 
+   * @returns `this.inner` if `Ok`, `or(this.inner)` if `Err`
+   * @throws if `or(this.inner)` throws
+   */
+  unwrapOrElseSync(or: unknown) {
+    return this.inner
+  }
+
+  /**
    * Transform Result<Promise<T>, E> into Promise<Result<T, E>>
    * @returns `await this.inner` if `Ok`, `this` if `Err`
    */
@@ -152,7 +172,7 @@ export class Ok<T = unknown>  {
   /**
    * Map the inner value into another, or a default one
    * @param mapper 
-   * @returns `Ok(await mapper(this.inner))` if `Ok`, `or` if `Err`
+   * @returns `await mapper(this.inner)` if `Ok`, `or` if `Err`
    * @throws if `await mapper(this.inner)` throws
    */
   async mapOr<M>(or: M, mapper: (inner: T) => Promiseable<M>) {
@@ -162,10 +182,30 @@ export class Ok<T = unknown>  {
   /**
    * Map the inner value into another, or a default one
    * @param mapper 
-   * @returns `Ok(mapper(this.inner))` if `Ok`, `or` if `Err`
+   * @returns `mapper(this.inner)` if `Ok`, `or` if `Err`
    * @throws if `mapper(this.inner)` throws
    */
   mapOrSync<M>(or: M, mapper: (inner: T) => M) {
+    return mapper(this.inner)
+  }
+
+  /**
+   * Map the inner value into another, or a default one
+   * @param mapper 
+   * @returns `await mapper(this.inner)` if `Ok`, `await or(this.inner)` if `Err`
+   * @throws if `await mapper(this.inner)` or `await or(this.inner)` throws
+   */
+  async mapOrElse<M>(or: unknown, mapper: (inner: T) => Promiseable<M>) {
+    return await mapper(this.inner)
+  }
+
+  /**
+   * Map the inner value into another, or a default one
+   * @param mapper 
+   * @returns `mapper(this.inner)` if `Ok`, `or(this.inner)` if `Err`
+   * @throws if `mapper(this.inner)` or `or(this.inner)` throws
+   */
+  mapOrElseSync<M>(or: unknown, mapper: (inner: T) => M) {
     return mapper(this.inner)
   }
 

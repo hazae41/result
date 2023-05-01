@@ -8,5 +8,5 @@ function tryVoid() {
 }
 
 function doNotRun(result: Result<string, Error>) {
-  const result2 = result.and(new Ok(123)).andThenSync(tryVoid).mapErrSync((x) => x.message)
+  const result2 = result.unwrapOrElseSync(e => e.message)
 }
