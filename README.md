@@ -201,7 +201,7 @@ function rewrapAndIncrement(other: OtherResult<number>): Result<number> {
 }
 ```
 
-### Panicking and the "good" try-catch
+### Panicking
 
 When using Result, throwing is seen as "panicking", if something is thrown and is not expected, it should stop the software
 
@@ -249,28 +249,30 @@ try {
 }
 ```
 
-You can do so by using `Err.throw` and `Err.catch`
+You can do so by using `Err.throw` and `Result.unthrow`
 
-`Err.throw` will return `Ok.inner` or throw the `Err` (it will throw `Err` itself, not the inner value), it is similar to `?` in Rust
+- `Err.throw()` will return `Ok.inner` or throw the `Err` (it will throw `Err` itself, not the inner value), it is similar to `?` in Rust
 
-`Err.catch` will check if `e` is an instance of `Err` and return it, else it will rethrow `e`
+- `Result.unthrow(callback)` will try-catch `callback`, check if the catched `e` is an instance of `Err` and return it, else it will rethrow `e`
 
 ```tsx
-try {
+return Result.unthrowSync(() => {
   const x = tryDoSomething().throw() // will throw Err instead of Err.inner
   const y = tryDoSomething().throw() // will throw Err instead of Err.inner
   const z = tryDoSomething().throw() // will throw Err instead of Err.inner
 
   return new Ok(doSomethingThatThrows(x, y, z))
-} catch(e: unknown) {
-  return Err.catch(e) // only catch Err, rethrow everything else
-}
+}) // only return Err<unknown>, rethrow everything else
 ```
 
-`Err.catch` can also type check the inner value of `Err` with the second parameter
+You can also type check the inner value of `Err` with `Result.unthrow(callback, ...types)`
 
 ```tsx
-catch(e: unknown) {
-  return Err.catch(e, Error) // only catch Err<Error>, rethrow everything else
-}
+return Result.unthrowSync(() => {
+  const x = tryDoSomething().throw() // will throw Err instead of Err.inner
+  const y = tryDoSomething().throw() // will throw Err instead of Err.inner
+  const z = tryDoSomething().throw() // will throw Err instead of Err.inner
+
+  return new Ok(doSomethingThatThrows(x, y, z))
+}, DOMException, MyError) // only return Err<DOMException | MyError>, rethrow everything else
 ```

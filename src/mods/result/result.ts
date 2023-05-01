@@ -1,13 +1,14 @@
 import { Promiseable } from "libs/promises/promises.js"
+import { Class } from "libs/reflection/reflection.js"
 import { Err, ErrInner } from "./err.js"
 import { Ok, OkInner } from "./ok.js"
 
-export type Result<D = unknown, E = unknown> =
-  | Ok<D>
+export type Result<T = unknown, E = unknown> =
+  | Ok<T>
   | Err<E>
 
-export interface Wrapper<D = unknown> {
-  unwrap(): D
+export interface Wrapper<T = unknown> {
+  unwrap(): T
 }
 
 export namespace Result {
@@ -49,12 +50,49 @@ export namespace Result {
   }
 
   /**
+   * Get back a Err thrown from Err.throw
+   * @param callback 
+   * @param type 
+   * @returns 
+   */
+  export async function unthrow<T, E>(callback: () => Promiseable<Result<T, E>>, ...types: Class<E>[]) {
+    try {
+      return await callback()
+    } catch (e: unknown) {
+      return Err.innerCastOrThrow(e, ...types)
+    }
+  }
+
+  /**
+   * Get back a Err thrown from Err.throw
+   * @param callback 
+   * @param type 
+   * @returns 
+   */
+  export function unthrowSync<T, E>(callback: () => Result<T, E>, ...types: Class<E>[]) {
+    try {
+      return callback()
+    } catch (e: unknown) {
+      return Err.innerCastOrThrow(e, ...types)
+    }
+  }
+
+  /**
    * Wrap without catching
    * @param callback 
    * @returns 
    */
   export async function wrap<T>(callback: () => Promiseable<T>) {
     return new Ok(await callback())
+  }
+
+  /**
+   * Wrap without catching
+   * @param callback 
+   * @returns 
+   */
+  export function wrapSync<T>(callback: () => T) {
+    return new Ok(callback())
   }
 
   /**
@@ -68,15 +106,6 @@ export namespace Result {
     } catch (error: unknown) {
       return new Err(error)
     }
-  }
-
-  /**
-   * Wrap without catching
-   * @param callback 
-   * @returns 
-   */
-  export function wrapSync<T>(callback: () => T) {
-    return new Ok(callback())
   }
 
   /**
