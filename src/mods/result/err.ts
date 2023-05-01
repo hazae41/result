@@ -5,14 +5,14 @@ import { Result } from "./result.js"
 
 export type ErrInner<E> = E extends Err<infer T> ? T : never
 
-export class Err<T = unknown>  {
+export class Err<E = unknown>  {
 
   /**
    * A failure
    * @param inner 
    */
   constructor(
-    readonly inner: T
+    readonly inner: E
   ) { }
 
   /**
@@ -89,7 +89,7 @@ export class Err<T = unknown>  {
    * Type guard for `Err`
    * @returns `true` if `Err`, `false` if `Ok`
    */
-  isErr(): this is Err<T> {
+  isErr(): this is Err<E> {
     return true
   }
 
@@ -130,11 +130,20 @@ export class Err<T = unknown>  {
   }
 
   /**
+   * Throw the inner value or get the inner error
+   * @returns `this.inner` if `Err`
+   * @throws `this.inner` if `Ok` 
+   */
+  unwrapErr() {
+    return this.inner
+  }
+
+  /**
    * Get the inner value or a default one
    * @param or 
    * @returns `this.inner` if `Ok`, `or` if `Err`
    */
-  unwrapOr<O>(or: O) {
+  unwrapOr<U>(or: U) {
     return or
   }
 
@@ -230,8 +239,8 @@ export class Err<T = unknown>  {
    * @returns `await callback()` if `Ok`, `this` if `Err`
    * @throws if `await callback()` throws
    */
-  async orThen<T>(callback: () => Promiseable<T>) {
-    return await callback()
+  async orThen<U>(callback: (inner: E) => Promiseable<U>) {
+    return await callback(this.inner)
   }
 
   /**
@@ -240,8 +249,8 @@ export class Err<T = unknown>  {
    * @returns `callback()` if `Ok`, `this` if `Err`
    * @throws if `callback()` throws
    */
-  orThenSync<T>(callback: () => T) {
-    return callback()
+  orThenSync<U>(callback: (inner: E) => U) {
+    return callback(this.inner)
   }
 
 }

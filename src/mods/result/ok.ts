@@ -84,6 +84,15 @@ export class Ok<T = unknown>  {
   }
 
   /**
+   * Throw the inner value or get the inner error
+   * @returns `this.inner` if `Err`
+   * @throws `this.inner` if `Ok` 
+   */
+  unwrapErr() {
+    throw this.inner
+  }
+
+  /**
    * Get the inner value or a default one
    * @param or 
    * @returns `this.inner` if `Ok`, `or` if `Err`
@@ -155,8 +164,8 @@ export class Ok<T = unknown>  {
    * @returns `await callback()` if `Ok`, `this` if `Err`
    * @throws if `await callback()` throws
    */
-  async andThen<T>(callback: () => Promiseable<T>) {
-    return await callback()
+  async andThen<U>(callback: (inner: T) => Promiseable<U>) {
+    return await callback(this.inner)
   }
 
   /**
@@ -165,8 +174,8 @@ export class Ok<T = unknown>  {
    * @returns `callback()` if `Ok`, `this` if `Err`
    * @throws if `callback()` throws
    */
-  andThenSync<T>(callback: () => T) {
-    return callback()
+  andThenSync<U>(callback: (inner: T) => U) {
+    return callback(this.inner)
   }
 
   /**
