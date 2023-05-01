@@ -130,6 +130,26 @@ export class Ok<T = unknown>  {
   }
 
   /**
+   * Map the inner error into another
+   * @param mapper 
+   * @returns `Err(await mapper(this.inner))` if `Err`, `this` if `Ok`
+   * @throws if `await mapper(this.inner)` throws
+   */
+  mapErr(mapper: unknown) {
+    return this
+  }
+
+  /**
+   * Map the inner error into another
+   * @param mapper 
+   * @returns `Err(mapper(this.inner))` if `Err`, `this` if `Ok`
+   * @throws if `mapper(this.inner)` throws
+   */
+  mapErrSync(mapper: unknown) {
+    return this
+  }
+
+  /**
    * Map the inner value into another, or a default one
    * @param mapper 
    * @returns `Ok(await mapper(this.inner))` if `Ok`, `or` if `Err`

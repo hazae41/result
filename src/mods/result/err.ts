@@ -156,7 +156,7 @@ export class Err<E = unknown>  {
   }
 
   /**
-   * Map the inner value into another, throwing if mapper throws
+   * Map the inner value into another
    * @param mapper 
    * @returns `Ok(await mapper(this.inner))` if `Ok`, `this` if `Err`
    * @throws if `await mapper(this.inner)` throws
@@ -166,13 +166,33 @@ export class Err<E = unknown>  {
   }
 
   /**
-   * Map the inner value into another, throwing if mapper throws
+   * Map the inner value into another
    * @param mapper 
    * @returns `Ok(mapper(this.inner))` if `Ok`, `this` if `Err`
    * @throws if `mapper(this.inner)` throws
    */
   mapSync(mapper: unknown) {
     return this
+  }
+
+  /**
+   * Map the inner error into another
+   * @param mapper 
+   * @returns `Err(await mapper(this.inner))` if `Err`, `this` if `Ok`
+   * @throws if `await mapper(this.inner)` throws
+   */
+  async mapErr<M>(mapper: (inner: E) => Promiseable<M>) {
+    return new Err<M>(await mapper(this.inner))
+  }
+
+  /**
+   * Map the inner error into another
+   * @param mapper 
+   * @returns `Err(mapper(this.inner))` if `Err`, `this` if `Ok`
+   * @throws if `mapper(this.inner)` throws
+   */
+  mapErrSync<M>(mapper: (inner: E) => M) {
+    return new Err<M>(mapper(this.inner))
   }
 
   /**
