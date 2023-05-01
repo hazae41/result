@@ -49,9 +49,12 @@ export class Err<T = unknown>  {
    * @throws `inner` if unable to do so
    */
   static castOrThrow<T>(inner: unknown, ...types: Class<T>[]) {
+    if (!types.length)
+      return new this(inner) as Err<T>
+
     for (const type of types)
       if (inner instanceof type)
-        return new this(inner)
+        return new this(inner) as Err<T>
 
     throw inner
   }
@@ -70,7 +73,7 @@ export class Err<T = unknown>  {
       return err as Err<T>
 
     for (const type of types)
-      if (err instanceof Err && err.inner instanceof type)
+      if (err.inner instanceof type)
         return err as Err<T>
 
     throw err

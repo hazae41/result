@@ -100,11 +100,11 @@ export namespace Result {
    * @param callback 
    * @returns 
    */
-  export async function catchAndWrap<T>(callback: () => Promiseable<T>) {
+  export async function catchAndWrap<T, E>(callback: () => Promiseable<T>, ...types: Class<E>[]) {
     try {
-      return await wrap(callback)
+      return new Ok(await callback())
     } catch (error: unknown) {
-      return new Err(error)
+      return Err.castOrThrow(error, ...types)
     }
   }
 
@@ -113,11 +113,11 @@ export namespace Result {
    * @param callback 
    * @returns 
    */
-  export function catchAndWrapSync<T>(callback: () => T) {
+  export function catchAndWrapSync<T, E>(callback: () => T, ...types: Class<E>[]) {
     try {
-      return wrapSync(callback)
+      return new Ok(callback())
     } catch (error: unknown) {
-      return new Err(error)
+      return Err.castOrThrow(error, ...types)
     }
   }
 
