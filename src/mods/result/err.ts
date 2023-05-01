@@ -19,7 +19,7 @@ export class Err<T = unknown>  {
   }
 
   /**
-   * Create an Err with a ResultError inside
+   * Create an Err with an Error inside
    * @param message 
    * @param options 
    * @returns 
