@@ -35,7 +35,7 @@ export namespace Result {
   export function rewrap<T extends Result>(wrapper: T): Result<OkInner<T>, ErrInner<T>>
 
   /**
-   * Rewrap any object with unwrap()
+   * Rewrap any object with unwrap() into a Result
    * @param wrapper 
    * @returns 
    */
