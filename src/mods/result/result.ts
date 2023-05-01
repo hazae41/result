@@ -50,10 +50,11 @@ export namespace Result {
   }
 
   /**
-   * Get back a Err thrown from Err.throw
+   * Catch an Err thrown from Err.throw
    * @param callback 
    * @param type 
-   * @returns 
+   * @returns `Ok<T>` if no `Err` was thrown, `Err<E>` otherwise
+   * @see Err.throw
    */
   export async function unthrow<T, E>(callback: () => Promiseable<Result<T, E>>, ...types: Class<E>[]) {
     try {
@@ -64,10 +65,11 @@ export namespace Result {
   }
 
   /**
-   * Get back a Err thrown from Err.throw
+   * Catch an Err thrown from Err.throw
    * @param callback 
    * @param type 
-   * @returns 
+   * @returns `Ok<T>` if no `Err` was thrown, `Err<E>` otherwise
+   * @see Err.throw
    */
   export function unthrowSync<T, E>(callback: () => Result<T, E>, ...types: Class<E>[]) {
     try {
