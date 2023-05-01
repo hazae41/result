@@ -1,5 +1,6 @@
 import { None, Some } from "@hazae41/option"
 import { Promiseable } from "libs/promises/promises.js"
+import { Result } from "./result.js"
 
 export type OkInner<O> = O extends Ok<infer T> ? T : never
 
@@ -100,7 +101,7 @@ export class Ok<T = unknown>  {
   }
 
   /**
-   * Map the inner value into another, throwing if mapper throws
+   * Map the inner value into another
    * @param mapper 
    * @returns `Ok(await mapper(this.inner))` if `Ok`, `this` if `Err`
    * @throws if `await mapper(this.inner)` throws
@@ -110,7 +111,7 @@ export class Ok<T = unknown>  {
   }
 
   /**
-   * Map the inner value into another, throwing if mapper throws
+   * Map the inner value into another
    * @param mapper 
    * @returns `Ok(mapper(this.inner))` if `Ok`, `this` if `Err`
    * @throws if `mapper(this.inner)` throws
@@ -137,6 +138,64 @@ export class Ok<T = unknown>  {
    */
   mapOrSync<M>(or: M, mapper: (inner: T) => M) {
     return mapper(this.inner)
+  }
+
+  /**
+   * Return `and` if `Ok`, return `this` if `Err`
+   * @param and 
+   * @returns `and` if `Ok`, `this` if `Err`
+   */
+  and<T>(and: T) {
+    return and
+  }
+
+  /**
+   * Return `await callback()` if `Ok`, return `this` if `Err`
+   * @param callback 
+   * @returns `await callback()` if `Ok`, `this` if `Err`
+   * @throws if `await callback()` throws
+   */
+  async andThen<T>(callback: () => Promiseable<T>) {
+    return await callback()
+  }
+
+  /**
+   * Return `callback()` if `Ok`, return `this` if `Err`
+   * @param callback 
+   * @returns `callback()` if `Ok`, `this` if `Err`
+   * @throws if `callback()` throws
+   */
+  andThenSync<T>(callback: () => T) {
+    return callback()
+  }
+
+  /**
+   * Return `or` if `Ok`, return `this` if `Err`
+   * @param or 
+   * @returns `or` if `Ok`, `this` if `Err`
+   */
+  or(or: unknown) {
+    return this
+  }
+
+  /**
+   * Return `await callback()` if `Ok`, return `this` if `Err`
+   * @param callback 
+   * @returns `await callback()` if `Ok`, `this` if `Err`
+   * @throws if `await callback()` throws
+   */
+  async orThen(callback: unknown) {
+    return this
+  }
+
+  /**
+   * Return `callback()` if `Ok`, return `this` if `Err`
+   * @param callback 
+   * @returns `callback()` if `Ok`, `this` if `Err`
+   * @throws if `callback()` throws
+   */
+  orThenSync(callback: unknown) {
+    return this
   }
 
 }

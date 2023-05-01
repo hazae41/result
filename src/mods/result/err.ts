@@ -1,5 +1,7 @@
 import { None, Some } from "@hazae41/option"
+import { Promiseable } from "libs/promises/promises.js"
 import { Class } from "libs/reflection/reflection.js"
+import { Result } from "./result.js"
 
 export type ErrInner<E> = E extends Err<infer T> ? T : never
 
@@ -182,6 +184,64 @@ export class Err<T = unknown>  {
    */
   mapOrSync<M>(or: M, mapper: unknown) {
     return or
+  }
+
+  /**
+   * Return `and` if `Ok`, return `this` if `Err`
+   * @param and 
+   * @returns `and` if `Ok`, `this` if `Err`
+   */
+  and(and: unknown) {
+    return this
+  }
+
+  /**
+   * Return `await callback()` if `Ok`, return `this` if `Err`
+   * @param callback 
+   * @returns `await callback()` if `Ok`, `this` if `Err`
+   * @throws if `await callback()` throws
+   */
+  async andThen(callback: unknown) {
+    return this
+  }
+
+  /**
+   * Return `callback()` if `Ok`, return `this` if `Err`
+   * @param callback 
+   * @returns `callback()` if `Ok`, `this` if `Err`
+   * @throws if `callback()` throws
+   */
+  andThenSync(callback: unknown) {
+    return this
+  }
+
+  /**
+   * Return `or` if `Ok`, return `this` if `Err`
+   * @param or 
+   * @returns `or` if `Ok`, `this` if `Err`
+   */
+  or<T>(or: T) {
+    return or
+  }
+
+  /**
+   * Return `await callback()` if `Ok`, return `this` if `Err`
+   * @param callback 
+   * @returns `await callback()` if `Ok`, `this` if `Err`
+   * @throws if `await callback()` throws
+   */
+  async orThen<T>(callback: () => Promiseable<T>) {
+    return await callback()
+  }
+
+  /**
+   * Return `callback()` if `Ok`, return `this` if `Err`
+   * @param callback 
+   * @returns `callback()` if `Ok`, `this` if `Err`
+   * @throws if `callback()` throws
+   */
+  orThenSync<T>(callback: () => T) {
+    return callback()
   }
 
 }
