@@ -1,1 +1,1 @@
-console.log("no tests")
+export * from "./err.test.js";

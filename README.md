@@ -140,7 +140,7 @@ function maybeSlice(result: Result<string>): string | undefined {
   return result.ok().inner?.slice(0, 5)
 }
 
-maybeSlice(Ok.new("hello world")) // will return "hello"
+maybeSlice(new Ok("hello world")) // will return "hello"
 maybeSlice(Err.error("Error")) // will return undefined 
 ```
 
@@ -151,11 +151,11 @@ You can easily map inner data if Ok and do nothing if Err, with support for asyn
 ```typescript
 import { Result, Ok, Err } from "@hazae41/result"
 
-function tryIncrement(result: Result<number, Error>): Result<number> {
+function tryIncrement(result: Result<number, Error>): Result<number, Error> {
   return result.mapSync(x => x + 1)
 }
 
-tryIncrement(Ok.new(0)) // Ok(1)
+tryIncrement(new Ok(0)) // Ok(1)
 tryIncrement(Err.error("Error")) // Err(Error("Error"))
 ```
 
@@ -167,10 +167,10 @@ You can easily check for Ok or Err and it's fully type safe
 import { Result, Ok, Err } from "@hazae41/result"
 
 function incrementOrFail(result: Result<number, Error>): number | Error {
-  if (result.isOk())  // Ok<number>
-    return result.inner + 1 // number
-  else                // Err<Error>
-    return new Error("Failed", { cause: result.inner }) 
+  if (result.isOk())
+    result // Ok<number>
+  else
+    result // Err<Error>
 }
 ```
 
@@ -179,7 +179,7 @@ function incrementOrFail(result: Result<number, Error>): number | Error {
 You can easily wrap try-catch patterns, with support for async and sync
 
 ```typescript
-const result = Result.tryWrapSync(() => {
+const result = Result.catchAndWrapSync(() => {
   if (something)
     return 12345
   else
@@ -197,6 +197,80 @@ interface OtherResult<T> {
 }
 
 function rewrapAndIncrement(other: OtherResult<number>): Result<number> {
-  return Result.rewrap(other).tryMapSync(x => x + 1)
+  return Result.rewrap(other).mapSync(x => x + 1)
+}
+```
+
+### Panicking and the "good" try-catch
+
+When using Result, throwing is seen as "panicking", if something is thrown and is not expected, it should stop the software
+
+So the try-catch pattern is prohibited in Result kingdom, unless you use external code from a library that doesn't use Result
+
+```tsx
+try {
+  return new Ok(doSomethingThatThrows())
+} catch(e: unknown) {
+  return new Err(e as Error)
+}
+```
+
+But, sometimes, you want to do a bunch of actions, unwrap everything, catch everyting and return Err
+
+```tsx
+/**
+ * BAD EXAMPLE
+ **/
+try {
+  const x = tryDoSomething().unwrap() // lazy unwrap
+  const y = tryDoSomething().unwrap() // lazy unwrap
+  const z = tryDoSomething().unwrap() // lazy unwrap
+
+  return new Ok(doSomething(x, y, z))
+} catch(e: unknown) {
+  return new Err(e as Error)
+}
+```
+
+But what if you only want to catch errors thrown from unwrap(), and not errors coming from real throws
+
+```tsx
+/**
+ * BAD EXAMPLE
+ **/
+try {
+  const x = tryDoSomething().unwrap()
+  const y = tryDoSomething().unwrap()
+  const z = tryDoSomething().unwrap()
+
+  return new Ok(doSomethingThatThrows(x, y, z))
+} catch(e: unknown) {
+  return new Err(e as Error)
+}
+```
+
+You can do so by using `Err.throw` and `Err.catch`
+
+`Err.throw` will return `Ok.inner` or throw the `Err` (it will throw `Err` itself, not the inner value), it is similar to `?` in Rust
+
+`Err.catch` will check if `e` is an instance of `Err` and return it, else it will rethrow `e`
+
+```tsx
+try {
+  const x = tryDoSomething().throw() // will throw Err instead of Err.inner
+  const y = tryDoSomething().throw() // will throw Err instead of Err.inner
+  const z = tryDoSomething().throw() // will throw Err instead of Err.inner
+
+  return new Ok(doSomethingThatThrows(x, y, z))
+} catch(e: unknown) {
+  return Err.catch(e) // only catch Err, rethrow everything else
+}
+```
+
+`Err.catch` can also type check the inner value of `Err` with the second parameter
+
+```tsx
+catch(e: unknown) {
+  return Err.catch(e, Error) // only catch Err<Error>, rethrow everything else
 }
 ```

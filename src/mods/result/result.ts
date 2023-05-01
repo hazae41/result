@@ -62,7 +62,7 @@ export namespace Result {
    * @param callback 
    * @returns 
    */
-  export async function tryWrap<T>(callback: () => Promiseable<T>) {
+  export async function catchAndWrap<T>(callback: () => Promiseable<T>) {
     try {
       return await wrap(callback)
     } catch (error: unknown) {
@@ -84,7 +84,7 @@ export namespace Result {
    * @param callback 
    * @returns 
    */
-  export function tryWrapSync<T>(callback: () => T) {
+  export function catchAndWrapSync<T>(callback: () => T) {
     try {
       return wrapSync(callback)
     } catch (error: unknown) {

@@ -30,6 +30,10 @@ export class Ok<T = unknown>  {
     return false
   }
 
+  throw() {
+    return this.inner
+  }
+
   unwrap() {
     return this.inner
   }
@@ -60,7 +64,7 @@ export class Ok<T = unknown>  {
    * @param mapper 
    * @returns 
    */
-  async tryMap<M>(mapper: (inner: T) => Promiseable<M>) {
+  async catchAndMap<M>(mapper: (inner: T) => Promiseable<M>) {
     try {
       return await this.map(mapper)
     } catch (error: unknown) {
@@ -82,7 +86,7 @@ export class Ok<T = unknown>  {
    * @param mapper 
    * @returns 
    */
-  tryMapSync<M>(mapper: (inner: T) => M) {
+  catchAndMapSync<M>(mapper: (inner: T) => M) {
     try {
       return this.mapSync(mapper)
     } catch (error: unknown) {

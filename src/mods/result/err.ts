@@ -1,6 +1,5 @@
 import { None, Some } from "@hazae41/option"
 import { Class } from "libs/reflection/reflection.js"
-import { ResultError } from "./error.js"
 
 export type ErrInner<E> = E extends Err<infer T> ? T : never
 
@@ -26,16 +25,20 @@ export class Err<T = unknown>  {
    * @returns 
    */
   static error(message: string, options?: ErrorOptions) {
-    return new this(new ResultError(message, options))
+    return new this(new Error(message, options))
   }
 
   /**
-   * Try to cast `e` into `ResultError` and return `Err(e)`, throw `e` if unable to do so
+   * Try to cast `e` into `Err<type>` and return it, throw it if unable to do so
    * @param e 
-   * @param type 
    * @returns 
    */
-  static cast(e: unknown): Err<ResultError>;
+  static catch<T>(e: unknown, type?: Class<T>) {
+    if (e instanceof Err && type !== undefined && e.inner instanceof type)
+      return e as Err<T>
+    else
+      throw e
+  }
 
   /**
    * Try to cast `e` into `type` and return `Err(e)`, throw `e` if unable to do so
@@ -43,9 +46,7 @@ export class Err<T = unknown>  {
    * @param type 
    * @returns 
    */
-  static cast<T>(e: unknown, type: Class<T>): Err<T>;
-
-  static cast(e: unknown, type: Class<unknown> = ResultError) {
+  static cast<T>(e: unknown, type: Class<T>) {
     if (e instanceof type)
       return new this(e)
     else
@@ -53,22 +54,12 @@ export class Err<T = unknown>  {
   }
 
   /**
-   * Try to cast `e` into `ResultError` and return `Err(e)`, return `Err(or)` if unable to do so
-   * @param e 
-   * @param type 
-   * @returns 
-   */
-  static castOr(e: unknown, or: ResultError): Err<ResultError>;
-
-  /**
    * Try to cast `e` into `type` and return `Err(e)`, return `Err(or)` if unable to do so
    * @param e 
    * @param type 
    * @returns 
    */
-  static castOr<T>(e: unknown, or: T, type: Class<T>): Err<T>;
-
-  static castOr(e: unknown, or: unknown, type: Class<unknown> = ResultError) {
+  static castOr<T>(e: unknown, type: Class<T>, or: unknown) {
     if (e instanceof type)
       return new this(e)
     else
@@ -85,6 +76,10 @@ export class Err<T = unknown>  {
    */
   isErr(): this is Err<T> {
     return true
+  }
+
+  throw(): never {
+    throw this
   }
 
   unwrap(): never {
@@ -107,7 +102,7 @@ export class Err<T = unknown>  {
     return this
   }
 
-  tryMap(mapper: unknown) {
+  catchAndMap(mapper: unknown) {
     return this
   }
 
@@ -115,7 +110,7 @@ export class Err<T = unknown>  {
     return this
   }
 
-  tryMapSync(mapper: unknown) {
+  catchAndMapSync(mapper: unknown) {
     return this
   }
 
