@@ -1,6 +1,5 @@
 import { None, Some } from "@hazae41/option"
 import { Promiseable } from "libs/promises/promises.js"
-import { Result } from "./result.js"
 
 export type OkInner<O> = O extends Ok<infer T> ? T : never
 
