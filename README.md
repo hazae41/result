@@ -51,7 +51,7 @@ try {
   if (e instanceof Error)
     // use e
   else
-    // what should I do now?
+    // what should I do now? rethrow?
 }
 ```
 
