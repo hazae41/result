@@ -60,7 +60,7 @@ export namespace Result {
     try {
       return await callback()
     } catch (e: unknown) {
-      return Err.innerCastOrThrow(e, ...types)
+      return Err.castOrThrow(e, ...types)
     }
   }
 
@@ -75,7 +75,7 @@ export namespace Result {
     try {
       return callback()
     } catch (e: unknown) {
-      return Err.innerCastOrThrow(e, ...types)
+      return Err.castOrThrow(e, ...types)
     }
   }
 
@@ -106,7 +106,7 @@ export namespace Result {
     try {
       return new Ok(await callback())
     } catch (error: unknown) {
-      return Err.castOrThrow(error, ...types)
+      return Err.castAndWrapOrThrow(error, ...types)
     }
   }
 
@@ -119,7 +119,7 @@ export namespace Result {
     try {
       return new Ok(callback())
     } catch (error: unknown) {
-      return Err.castOrThrow(error, ...types)
+      return Err.castAndWrapOrThrow(error, ...types)
     }
   }
 

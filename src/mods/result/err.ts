@@ -42,13 +42,13 @@ export class Err<T = unknown>  {
   }
 
   /**
-   * Try to cast `inner` into one of the `types` and return `Err(inner)`, throw `e` if unable to do so
+   * Try to cast `inner` into one of the `types` and return `Err(inner)`, throw `inner` if unable to do so
    * @param inner 
    * @param type 
    * @returns `Err(inner)` if `e` is an `instanceof` one of the `types`
    * @throws `inner` if unable to do so
    */
-  static castOrThrow<T>(inner: unknown, ...types: Class<T>[]): Err<T> {
+  static castAndWrapOrThrow<T>(inner: unknown, ...types: Class<T>[]): Err<T> {
     if (!types.length)
       return new this(inner) as Err<T>
 
@@ -65,7 +65,7 @@ export class Err<T = unknown>  {
    * @returns `err` if `err instanceof Err` and `err.inner instanceof type` for some `type` in `types`
    * @throws `err` if unable to do so
    */
-  static innerCastOrThrow<T>(err: unknown, ...types: Class<T>[]): Err<T> {
+  static castOrThrow<T>(err: unknown, ...types: Class<T>[]): Err<T> {
     if (!(err instanceof Err))
       throw err
 
