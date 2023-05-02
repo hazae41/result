@@ -22,14 +22,14 @@
     "prepare": "npm run build"
   },
   "dependencies": {
-    "@hazae41/option": "^1.0.1"
+    "@hazae41/option": "^1.0.2"
   },
   "devDependencies": {
     "@hazae41/phobos": "^1.0.10",
     "@rollup/plugin-typescript": "^11.1.0",
     "@types/node": "^18.16.3",
     "rimraf": "^5.0.0",
-    "rollup": "^3.21.2",
+    "rollup": "^3.21.3",
     "rollup-plugin-dts": "^5.3.0",
     "rollup-plugin-node-externals": "^5.1.2",
     "typescript": "^5.0.4"
