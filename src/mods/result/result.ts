@@ -14,6 +14,18 @@ export type Result<T = unknown, E = unknown> =
 export namespace Result {
 
   /**
+   * Create an Option from a maybe Error value
+   * @param inner 
+   * @returns `Ok<T>` if `T`, `Err<Error>` if `Error`
+   */
+  export function from<T>(inner: T | Error) {
+    if (inner instanceof Error)
+      return new Err(inner)
+    else
+      return new Ok(inner)
+  }
+
+  /**
    * Rewrap any type that extends Ok into an Ok
    * @param wrapper 
    */
