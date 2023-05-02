@@ -4,7 +4,7 @@ import { Ok } from "./ok.js";
 import { Result } from "./result.js";
 
 function doNotRun(result: Result<string, Error>) {
-  result.andThen(async () => 123)
+  result.mapSync(async () => new Ok(123)).await()
 }
 
 class FirstError extends Error {

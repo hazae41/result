@@ -30,10 +30,6 @@ export class Ok<T = unknown>  {
     return new this<T>(inner)
   }
 
-  static wrap<T>(callback: () => T) {
-    return new this<T>(callback())
-  }
-
   /**
    * Type guard for `Ok`
    * @returns `true` if `Ok`, `false` if `Err`
@@ -151,10 +147,20 @@ export class Ok<T = unknown>  {
   /**
    * Get the inner value or compute a default one from the inner error
    * @param errMapper 
+   * @returns `this.inner` if `Ok`, `await errMapper(this.inner)` if `Err`
+   * @throws if `await errMapper(this.inner)` throws
+   */
+  async unwrapOrElse(errMapper: unknown): Promise<T> {
+    return this.inner
+  }
+
+  /**
+   * Get the inner value or compute a default one from the inner error
+   * @param errMapper 
    * @returns `this.inner` if `Ok`, `errMapper(this.inner)` if `Err`
    * @throws if `errMapper(this.inner)` throws
    */
-  unwrapOrElse(errMapper: unknown): T {
+  unwrapOrElseSync(errMapper: unknown): T {
     return this.inner
   }
 
@@ -171,21 +177,8 @@ export class Ok<T = unknown>  {
    * @param okCallback 
    * @returns `this`
    */
-  inspect(okCallback: (inner: T) => Promise<void>): Promise<this>
-
-  /**
-   * Calls the given callback with the inner value if `Ok`
-   * @param okCallback 
-   * @returns `this`
-   */
-  inspect(okCallback: (inner: T) => void): this
-
-  inspect(okCallback: (inner: T) => Promiseable<void>): Promiseable<this> {
-    const promiseable = okCallback(this.inner)
-
-    if (promiseable instanceof Promise)
-      return promiseable.then(() => this)
-
+  async inspect(okCallback: (inner: T) => Promiseable<void>): Promise<this> {
+    await okCallback(this.inner)
     return this
   }
 
@@ -200,46 +193,13 @@ export class Ok<T = unknown>  {
   }
 
   /**
-   * Calls the given callback with the inner value if `Err`
-   * @param errCallback 
-   * @returns `this`
-   */
-  inspectErr(errCallback: unknown): this {
-    return this
-  }
-
-  /**
-   * Calls the given callback with the inner value if `Err`
-   * @param errCallback 
-   * @returns `this`
-   */
-  inspectErrSync(errCallback: unknown): this {
-    return this
-  }
-
-  /**
    * Map the inner value into another
    * @param okMapper 
-   * @returns `Ok(okMapper(this.inner))` if `Ok`, `this` if `Err`
-   * @throws if `okMapper(this.inner)` throws
+   * @returns `Ok(await okMapper(this.inner))` if `Ok`, `this` if `Err`
+   * @throws if `await okMapper(this.inner)` throws
    */
-  map<U>(okMapper: (inner: T) => Promise<U>): Promise<Ok<U>>
-
-  /**
-   * Map the inner value into another
-   * @param okMapper 
-   * @returns `Ok(okMapper(this.inner))` if `Ok`, `this` if `Err`
-   * @throws if `okMapper(this.inner)` throws
-   */
-  map<U>(okMapper: (inner: T) => U): Ok<U>
-
-  map<U>(okMapper: (inner: T) => Promiseable<U>): Promiseable<Ok<U>> {
-    const promiseable = okMapper(this.inner)
-
-    if (promiseable instanceof Promise)
-      return promiseable.then(x => new Ok<U>(x))
-
-    return new Ok<U>(promiseable)
+  async map<U>(okMapper: (inner: T) => Promiseable<U>): Promise<Ok<U>> {
+    return new Ok<U>(await okMapper(this.inner))
   }
 
   /**
@@ -255,10 +215,10 @@ export class Ok<T = unknown>  {
   /**
    * Map the inner error into another
    * @param errMapper 
-   * @returns `Err(errMapper(this.inner))` if `Err`, `this` if `Ok`
-   * @throws if `errMapper(this.inner)` throws
+   * @returns `Err(await errMapper(this.inner))` if `Err`, `this` if `Ok`
+   * @throws if `await errMapper(this.inner)` throws
    */
-  mapErr(errMapper: unknown): this {
+  async mapErr(errMapper: unknown): Promise<this> {
     return this
   }
 
@@ -276,11 +236,33 @@ export class Ok<T = unknown>  {
    * Map the inner value into another, or a default one
    * @param value
    * @param okMapper 
+   * @returns `await okMapper(this.inner)` if `Ok`, `value` if `Err`
+   * @throws if `await okMapper(this.inner)` throws
+   */
+  async mapOr<U>(value: U, okMapper: (inner: T) => Promiseable<U>): Promise<U> {
+    return await okMapper(this.inner)
+  }
+
+  /**
+   * Map the inner value into another, or a default one
+   * @param value
+   * @param okMapper 
    * @returns `okMapper(this.inner)` if `Ok`, `value` if `Err`
    * @throws if `okMapper(this.inner)` throws
    */
-  mapOr<U>(value: U, okMapper: (inner: T) => U): U {
+  mapOrSync<U>(value: U, okMapper: (inner: T) => U): U {
     return okMapper(this.inner)
+  }
+
+  /**
+   * Map the inner value into another, or a default one
+   * @param errMapper
+   * @param okMapper 
+   * @returns `await okMapper(this.inner)` if `Ok`, `await errMapper(this.inner)` if `Err`
+   * @throws if `await okMapper(this.inner)` or `await errMapper(this.inner)` throws
+   */
+  async mapOrElse<U>(errMapper: unknown, okMapper: (inner: T) => Promiseable<U>): Promise<U> {
+    return await okMapper(this.inner)
   }
 
   /**
@@ -290,7 +272,7 @@ export class Ok<T = unknown>  {
    * @returns `okMapper(this.inner)` if `Ok`, `errMapper(this.inner)` if `Err`
    * @throws if `okMapper(this.inner)` or `errMapper(this.inner)` throws
    */
-  mapOrElse<U>(errMapper: unknown, okMapper: (inner: T) => U): U {
+  mapOrElseSync<U>(errMapper: unknown, okMapper: (inner: T) => U): U {
     return okMapper(this.inner)
   }
 
@@ -304,12 +286,22 @@ export class Ok<T = unknown>  {
   }
 
   /**
+   * Return `await okMapper(this.inner)` if `Ok`, return `this` if `Err`
+   * @param okMapper 
+   * @returns `await okMapper(this.inner)` if `Ok`, `this` if `Err`
+   * @throws if `await okMapper(this.inner)` throws
+   */
+  async andThen<U>(okMapper: (inner: T) => Promiseable<U>): Promise<U> {
+    return await okMapper(this.inner)
+  }
+
+  /**
    * Return `okMapper(this.inner)` if `Ok`, return `this` if `Err`
    * @param okMapper 
    * @returns `okMapper(this.inner)` if `Ok`, `this` if `Err`
    * @throws if `okMapper(this.inner)` throws
    */
-  andThen<U>(okMapper: (inner: T) => U): U {
+  andThenSync<U>(okMapper: (inner: T) => U): U {
     return okMapper(this.inner)
   }
 
@@ -323,12 +315,22 @@ export class Ok<T = unknown>  {
   }
 
   /**
+   * Return `await errMapper(this.inner)` if `Err`, return `this` if `Ok`
+   * @param errMapper 
+   * @returns `await errMapper(this.inner)` if `Err`, `this` if `Ok`
+   * @throws if `await errMapper(this.inner)` throws
+   */
+  async orElse(errMapper: unknown): Promise<this> {
+    return this
+  }
+
+  /**
    * Return `errMapper(this.inner)` if `Err`, return `this` if `Ok`
    * @param errMapper 
    * @returns `errMapper(this.inner)` if `Err`, `this` if `Ok`
    * @throws if `errMapper(this.inner)` throws
    */
-  orElse(errMapper: unknown): this {
+  orElseSync(errMapper: unknown): this {
     return this
   }
 

@@ -52,25 +52,9 @@ export namespace Result {
    * @returns `Ok<T>` if no `Err` was thrown, `Err<E>` otherwise
    * @see Err.throw
    */
-  export function unthrow<T, E>(callback: () => Promise<Result<T, E>>, ...types: Class<E>[]): Promise<Result<T, E>>
-
-  /**
-   * Catch an Err thrown from Err.throw
-   * @param callback 
-   * @param type 
-   * @returns `Ok<T>` if no `Err` was thrown, `Err<E>` otherwise
-   * @see Err.throw
-   */
-  export function unthrow<T, E>(callback: () => Result<T, E>, ...types: Class<E>[]): Result<T, E>
-
-  export function unthrow<T, E>(callback: () => Promiseable<Result<T, E>>, ...types: Class<E>[]) {
+  export async function unthrow<T, E>(callback: () => Promiseable<Result<T, E>>, ...types: Class<E>[]) {
     try {
-      const promiseable = callback()
-
-      if (promiseable instanceof Promise)
-        return promiseable.catch(e => Err.castOrThrow(e, ...types))
-
-      return promiseable
+      return await callback()
     } catch (e: unknown) {
       return Err.castOrThrow(e, ...types)
     }
@@ -96,25 +80,9 @@ export namespace Result {
    * @param callback 
    * @returns 
    */
-  export function catchAndWrap<T, E>(callback: () => Promise<T>, ...types: Class<E>[]): Promise<Result<T, E>>
-
-  /**
-   * Wrap with catching
-   * @param callback 
-   * @returns 
-   */
-  export function catchAndWrap<T, E>(callback: () => T, ...types: Class<E>[]): Result<T, E>
-
-  export function catchAndWrap<T, E>(callback: () => Promiseable<T>, ...types: Class<E>[]) {
+  export async function catchAndWrap<T, E>(callback: () => Promiseable<T>, ...types: Class<E>[]) {
     try {
-      const promiseable = callback()
-
-      if (promiseable instanceof Promise)
-        return promiseable
-          .then(x => new Ok(x))
-          .catch(e => Err.castAndWrapOrThrow(e, ...types))
-
-      return new Ok(promiseable)
+      return new Ok(await callback())
     } catch (e: unknown) {
       return Err.castAndWrapOrThrow(e, ...types)
     }
