@@ -4,7 +4,7 @@ import { Ok } from "./ok.js";
 import { Result } from "./result.js";
 
 function doNotRun(result: Result<string, Error>) {
-  result.mapSync(async () => new Ok(123)).await()
+  result.mapOr("hello", () => "world")
 }
 
 class FirstError extends Error {
