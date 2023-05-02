@@ -3,41 +3,37 @@ import { Class } from "libs/reflection/reflection.js"
 import { Err, ErrInner } from "./err.js"
 import { Ok, OkInner } from "./ok.js"
 
-export type Result<T = unknown, E = unknown> =
-  | Ok<T>
-  | Err<E>
-
 export interface Wrapper<T = unknown> {
   unwrap(): T
 }
+
+export type Result<T = unknown, E = unknown> =
+  | Ok<T>
+  | Err<E>
 
 export namespace Result {
 
   /**
    * Rewrap any type that extends Ok into an Ok
    * @param wrapper 
-   * @returns 
    */
   export function rewrap<T extends Ok>(wrapper: T): Ok<OkInner<T>>
 
   /**
    * Rewrap any type that extends Err into an Err
    * @param wrapper 
-   * @returns 
    */
   export function rewrap<T extends Err>(wrapper: T): Err<ErrInner<T>>
 
   /**
    * Rewrap any type that extends Result into a Result
    * @param wrapper 
-   * @returns 
    */
   export function rewrap<T extends Result>(wrapper: T): Result<OkInner<T>, ErrInner<T>>
 
   /**
    * Rewrap any object with unwrap() into a Result
    * @param wrapper 
-   * @returns 
    */
   export function rewrap<T>(wrapper: Wrapper<T>): Result<T>
 
