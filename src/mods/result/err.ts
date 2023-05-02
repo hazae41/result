@@ -18,7 +18,7 @@ export class Err<T = unknown>  {
    * Create an empty `Err`
    * @returns `Err(void)`
    */
-  static void() {
+  static void(): Err<void> {
     return new this<void>(undefined)
   }
 
@@ -27,7 +27,7 @@ export class Err<T = unknown>  {
    * @param inner 
    * @returns `Err(inner)`
    */
-  static new<T>(inner: T) {
+  static new<T>(inner: T): Err<T> {
     return new this(inner)
   }
 
@@ -37,7 +37,7 @@ export class Err<T = unknown>  {
    * @param options 
    * @returns 
    */
-  static error(message: string, options?: ErrorOptions) {
+  static error(message: string, options?: ErrorOptions): Err<Error> {
     return new this(new Error(message, options))
   }
 
@@ -48,7 +48,7 @@ export class Err<T = unknown>  {
    * @returns `Err(inner)` if `e` is an `instanceof` one of the `types`
    * @throws `inner` if unable to do so
    */
-  static castOrThrow<T>(inner: unknown, ...types: Class<T>[]) {
+  static castOrThrow<T>(inner: unknown, ...types: Class<T>[]): Err<T> {
     if (!types.length)
       return new this(inner) as Err<T>
 
@@ -65,7 +65,7 @@ export class Err<T = unknown>  {
    * @returns `err` if `err instanceof Err` and `err.inner instanceof type` for some `type` in `types`
    * @throws `err` if unable to do so
    */
-  static innerCastOrThrow<T>(err: unknown, ...types: Class<T>[]) {
+  static innerCastOrThrow<T>(err: unknown, ...types: Class<T>[]): Err<T> {
     if (!(err instanceof Err))
       throw err
 
@@ -99,7 +99,7 @@ export class Err<T = unknown>  {
    * Transform `Result<T, E>` into `Option<T>`
    * @returns `Some(this.inner)` if `Ok`, `None` if `Err`
    */
-  ok() {
+  ok(): None {
     return new None()
   }
 
@@ -107,7 +107,7 @@ export class Err<T = unknown>  {
    * Transform `Result<T, E>` into `Option<E>`
    * @returns `Some(this.inner)` if `Err`, `None` if `Ok`
    */
-  err() {
+  err(): Some<T> {
     return new Some(this.inner)
   }
 
@@ -136,7 +136,7 @@ export class Err<T = unknown>  {
    * @returns `this.inner` if `Err`
    * @throws `this.inner` if `Ok` 
    */
-  unwrapErr() {
+  unwrapErr(): T {
     return this.inner
   }
 
@@ -145,7 +145,7 @@ export class Err<T = unknown>  {
    * @param or 
    * @returns `this.inner` if `Ok`, `or` if `Err`
    */
-  unwrapOr<U>(or: U) {
+  unwrapOr<U>(or: U): U {
     return or
   }
 
@@ -155,7 +155,7 @@ export class Err<T = unknown>  {
    * @returns `this.inner` if `Ok`, `await or(this.inner)` if `Err`
    * @throws if `await or(this.inner)` throws
    */
-  async unwrapOrElse<U>(or: (inner: T) => U) {
+  async unwrapOrElse<U>(or: (inner: T) => Promiseable<U>): Promise<U> {
     return await or(this.inner)
   }
 
@@ -165,7 +165,7 @@ export class Err<T = unknown>  {
    * @returns `this.inner` if `Ok`, `or(this.inner)` if `Err`
    * @throws if `or(this.inner)` throws
    */
-  unwrapOrElseSync<U>(or: (inner: T) => U) {
+  unwrapOrElseSync<U>(or: (inner: T) => U): U {
     return or(this.inner)
   }
 
@@ -173,7 +173,7 @@ export class Err<T = unknown>  {
    * Transform Result<Promise<T>, E> into Promise<Result<T, E>>
    * @returns `await this.inner` if `Ok`, `this` if `Err`
    */
-  async await() {
+  async await(): Promise<this> {
     return this
   }
 
@@ -183,7 +183,7 @@ export class Err<T = unknown>  {
    * @returns `Ok(await mapper(this.inner))` if `Ok`, `this` if `Err`
    * @throws if `await mapper(this.inner)` throws
    */
-  map(mapper: unknown) {
+  map(mapper: unknown): this {
     return this
   }
 
@@ -193,7 +193,7 @@ export class Err<T = unknown>  {
    * @returns `Ok(mapper(this.inner))` if `Ok`, `this` if `Err`
    * @throws if `mapper(this.inner)` throws
    */
-  mapSync(mapper: unknown) {
+  mapSync(mapper: unknown): this {
     return this
   }
 
@@ -203,7 +203,7 @@ export class Err<T = unknown>  {
    * @returns `Err(await mapper(this.inner))` if `Err`, `this` if `Ok`
    * @throws if `await mapper(this.inner)` throws
    */
-  async mapErr<U>(mapper: (inner: T) => Promiseable<U>) {
+  async mapErr<U>(mapper: (inner: T) => Promiseable<U>): Promise<Err<U>> {
     return new Err<U>(await mapper(this.inner))
   }
 
@@ -213,7 +213,7 @@ export class Err<T = unknown>  {
    * @returns `Err(mapper(this.inner))` if `Err`, `this` if `Ok`
    * @throws if `mapper(this.inner)` throws
    */
-  mapErrSync<U>(mapper: (inner: T) => U) {
+  mapErrSync<U>(mapper: (inner: T) => U): Err<U> {
     return new Err<U>(mapper(this.inner))
   }
 
@@ -223,7 +223,7 @@ export class Err<T = unknown>  {
    * @returns `await mapper(this.inner)` if `Ok`, `or` if `Err`
    * @throws if `await mapper(this.inner)` throws
    */
-  async mapOr<U>(or: U, mapper: unknown) {
+  mapOr<U>(or: U, mapper: unknown): U {
     return or
   }
 
@@ -233,7 +233,7 @@ export class Err<T = unknown>  {
    * @returns `mapper(this.inner)` if `Ok`, `or` if `Err`
    * @throws if `mapper(this.inner)` throws
    */
-  mapOrSync<U>(or: U, mapper: unknown) {
+  mapOrSync<U>(or: U, mapper: unknown): U {
     return or
   }
 
@@ -243,7 +243,7 @@ export class Err<T = unknown>  {
    * @returns `await mapper(this.inner)` if `Ok`, `await or(this.inner)` if `Err`
    * @throws if `await mapper(this.inner)` or `await or(this.inner)` throws
    */
-  async mapOrElse<U>(or: (inner: T) => Promiseable<U>, mapper: unknown) {
+  async mapOrElse<U>(or: (inner: T) => Promiseable<U>, mapper: unknown): Promise<U> {
     return await or(this.inner)
   }
 
@@ -253,7 +253,7 @@ export class Err<T = unknown>  {
    * @returns `mapper(this.inner)` if `Ok`, `or(this.inner)` if `Err`
    * @throws if `mapper(this.inner)` or `or(this.inner)` throws
    */
-  mapOrElseSync<U>(or: (inner: T) => U, mapper: unknown) {
+  mapOrElseSync<U>(or: (inner: T) => U, mapper: unknown): U {
     return or(this.inner)
   }
 
@@ -262,7 +262,7 @@ export class Err<T = unknown>  {
    * @param and 
    * @returns `and` if `Ok`, `this` if `Err`
    */
-  and(and: unknown) {
+  and(and: unknown): this {
     return this
   }
 
@@ -272,7 +272,7 @@ export class Err<T = unknown>  {
    * @returns `await callback()` if `Ok`, `this` if `Err`
    * @throws if `await callback()` throws
    */
-  async andThen(callback: unknown) {
+  andThen(callback: unknown): this {
     return this
   }
 
@@ -282,7 +282,7 @@ export class Err<T = unknown>  {
    * @returns `callback()` if `Ok`, `this` if `Err`
    * @throws if `callback()` throws
    */
-  andThenSync(callback: unknown) {
+  andThenSync(callback: unknown): this {
     return this
   }
 
@@ -291,7 +291,7 @@ export class Err<T = unknown>  {
    * @param or 
    * @returns `or` if `Ok`, `this` if `Err`
    */
-  or<U>(or: U) {
+  or<U>(or: U): U {
     return or
   }
 
@@ -301,7 +301,7 @@ export class Err<T = unknown>  {
    * @returns `await callback()` if `Ok`, `this` if `Err`
    * @throws if `await callback()` throws
    */
-  async orThen<U>(callback: (inner: T) => Promiseable<U>) {
+  async orThen<U>(callback: (inner: T) => Promiseable<U>): Promise<U> {
     return await callback(this.inner)
   }
 
@@ -311,7 +311,7 @@ export class Err<T = unknown>  {
    * @returns `callback()` if `Ok`, `this` if `Err`
    * @throws if `callback()` throws
    */
-  orThenSync<U>(callback: (inner: T) => U) {
+  orThenSync<U>(callback: (inner: T) => U): U {
     return callback(this.inner)
   }
 
