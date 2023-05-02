@@ -69,7 +69,7 @@ export class Ok<T = unknown>  {
    * @param errPredicate 
    * @returns `true` if `Err` and `await errPredicate(this.inner)`, `false` otherwise
    */
-  async isErrAnd(errPredicate: unknown): Promise<boolean> {
+  async isErrAnd(errPredicate: unknown): Promise<false> {
     return false
   }
 
@@ -78,7 +78,7 @@ export class Ok<T = unknown>  {
    * @param errPredicate 
    * @returns `true` if `Err` and `await errPredicate(this.inner)`, `false` otherwise
    */
-  isErrAndSync(errPredicate: unknown): boolean {
+  isErrAndSync(errPredicate: unknown): false {
     return false
   }
 
