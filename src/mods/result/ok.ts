@@ -93,30 +93,30 @@ export class Ok<T = unknown>  {
 
   /**
    * Get the inner value or a default one
-   * @param or 
-   * @returns `this.inner` if `Ok`, `or` if `Err`
+   * @param value 
+   * @returns `this.inner` if `Ok`, `value` if `Err`
    */
-  unwrapOr(or: unknown): T {
+  unwrapOr(value: unknown): T {
     return this.inner
   }
 
   /**
    * Get the inner value or compute a default one from the inner error
-   * @param or 
-   * @returns `this.inner` if `Ok`, `await or(this.inner)` if `Err`
-   * @throws if `await or(this.inner)` throws
+   * @param errMapper 
+   * @returns `this.inner` if `Ok`, `await errMapper(this.inner)` if `Err`
+   * @throws if `await errMapper(this.inner)` throws
    */
-  unwrapOrElse(or: unknown): T {
+  unwrapOrElse(errMapper: unknown): T {
     return this.inner
   }
 
   /**
    * Get the inner value or compute a default one from the inner error
-   * @param or 
-   * @returns `this.inner` if `Ok`, `or(this.inner)` if `Err`
-   * @throws if `or(this.inner)` throws
+   * @param errMapper 
+   * @returns `this.inner` if `Ok`, `errMapper(this.inner)` if `Err`
+   * @throws if `errMapper(this.inner)` throws
    */
-  unwrapOrElseSync(or: unknown): T {
+  unwrapOrElseSync(errMapper: unknown): T {
     return this.inner
   }
 
@@ -130,139 +130,143 @@ export class Ok<T = unknown>  {
 
   /**
    * Map the inner value into another
-   * @param mapper 
-   * @returns `Ok(await mapper(this.inner))` if `Ok`, `this` if `Err`
-   * @throws if `await mapper(this.inner)` throws
+   * @param okMapper 
+   * @returns `Ok(await okMapper(this.inner))` if `Ok`, `this` if `Err`
+   * @throws if `await okMapper(this.inner)` throws
    */
-  async map<U>(mapper: (inner: T) => Promiseable<U>): Promise<Ok<U>> {
-    return new Ok<U>(await mapper(this.inner))
+  async map<U>(okMapper: (inner: T) => Promiseable<U>): Promise<Ok<U>> {
+    return new Ok<U>(await okMapper(this.inner))
   }
 
   /**
    * Map the inner value into another
-   * @param mapper 
-   * @returns `Ok(mapper(this.inner))` if `Ok`, `this` if `Err`
-   * @throws if `mapper(this.inner)` throws
+   * @param okMapper 
+   * @returns `Ok(okMapper(this.inner))` if `Ok`, `this` if `Err`
+   * @throws if `okMapper(this.inner)` throws
    */
-  mapSync<U>(mapper: (inner: T) => U): Ok<U> {
-    return new Ok<U>(mapper(this.inner))
+  mapSync<U>(okMapper: (inner: T) => U): Ok<U> {
+    return new Ok<U>(okMapper(this.inner))
   }
 
   /**
    * Map the inner error into another
-   * @param mapper 
-   * @returns `Err(await mapper(this.inner))` if `Err`, `this` if `Ok`
-   * @throws if `await mapper(this.inner)` throws
+   * @param errMapper 
+   * @returns `Err(await errMapper(this.inner))` if `Err`, `this` if `Ok`
+   * @throws if `await errMapper(this.inner)` throws
    */
-  mapErr(mapper: unknown): this {
+  mapErr(errMapper: unknown): this {
     return this
   }
 
   /**
    * Map the inner error into another
-   * @param mapper 
-   * @returns `Err(mapper(this.inner))` if `Err`, `this` if `Ok`
-   * @throws if `mapper(this.inner)` throws
+   * @param errMapper 
+   * @returns `Err(errMapper(this.inner))` if `Err`, `this` if `Ok`
+   * @throws if `errMapper(this.inner)` throws
    */
-  mapErrSync(mapper: unknown): this {
+  mapErrSync(errMapper: unknown): this {
     return this
   }
 
   /**
    * Map the inner value into another, or a default one
-   * @param mapper 
-   * @returns `await mapper(this.inner)` if `Ok`, `or` if `Err`
-   * @throws if `await mapper(this.inner)` throws
+   * @param value
+   * @param okMapper 
+   * @returns `await okMapper(this.inner)` if `Ok`, `value` if `Err`
+   * @throws if `await okMapper(this.inner)` throws
    */
-  async mapOr<U>(or: U, mapper: (inner: T) => Promiseable<U>): Promise<U> {
-    return await mapper(this.inner)
+  async mapOr<U>(value: U, okMapper: (inner: T) => Promiseable<U>): Promise<U> {
+    return await okMapper(this.inner)
   }
 
   /**
    * Map the inner value into another, or a default one
-   * @param mapper 
-   * @returns `mapper(this.inner)` if `Ok`, `or` if `Err`
-   * @throws if `mapper(this.inner)` throws
+   * @param value
+   * @param okMapper 
+   * @returns `okMapper(this.inner)` if `Ok`, `value` if `Err`
+   * @throws if `okMapper(this.inner)` throws
    */
-  mapOrSync<U>(or: U, mapper: (inner: T) => U): U {
-    return mapper(this.inner)
+  mapOrSync<U>(value: U, okMapper: (inner: T) => U): U {
+    return okMapper(this.inner)
   }
 
   /**
    * Map the inner value into another, or a default one
-   * @param mapper 
-   * @returns `await mapper(this.inner)` if `Ok`, `await or(this.inner)` if `Err`
-   * @throws if `await mapper(this.inner)` or `await or(this.inner)` throws
+   * @param errMapper
+   * @param okMapper 
+   * @returns `await okMapper(this.inner)` if `Ok`, `await errMapper(this.inner)` if `Err`
+   * @throws if `await okMapper(this.inner)` or `await errMapper(this.inner)` throws
    */
-  async mapOrElse<U>(or: unknown, mapper: (inner: T) => Promiseable<U>): Promise<U> {
-    return await mapper(this.inner)
+  async mapOrElse<U>(errMapper: unknown, okMapper: (inner: T) => Promiseable<U>): Promise<U> {
+    return await okMapper(this.inner)
   }
 
   /**
    * Map the inner value into another, or a default one
-   * @param mapper 
-   * @returns `mapper(this.inner)` if `Ok`, `or(this.inner)` if `Err`
-   * @throws if `mapper(this.inner)` or `or(this.inner)` throws
+   * @param errMapper
+   * @param okMapper 
+   * @returns `okMapper(this.inner)` if `Ok`, `errMapper(this.inner)` if `Err`
+   * @throws if `okMapper(this.inner)` or `errMapper(this.inner)` throws
    */
-  mapOrElseSync<U>(or: unknown, mapper: (inner: T) => U): U {
-    return mapper(this.inner)
+  mapOrElseSync<U>(errMapper: unknown, okMapper: (inner: T) => U): U {
+    return okMapper(this.inner)
   }
 
   /**
-   * Return `and` if `Ok`, return `this` if `Err`
-   * @param and 
-   * @returns `and` if `Ok`, `this` if `Err`
+   * Return `value` if `Ok`, return `this` if `Err`
+   * @param value 
+   * @returns `value` if `Ok`, `this` if `Err`
    */
-  and<U>(and: U): U {
-    return and
+  and<U>(value: U): U {
+    return value
   }
 
   /**
-   * Return `await callback()` if `Ok`, return `this` if `Err`
-   * @param callback 
-   * @returns `await callback()` if `Ok`, `this` if `Err`
-   * @throws if `await callback()` throws
+   * Return `await okMapper(this.inner)` if `Ok`, return `this` if `Err`
+   * @param okMapper 
+   * @returns `await okMapper(this.inner)` if `Ok`, `this` if `Err`
+   * @throws if `await okMapper(this.inner)` throws
    */
-  async andThen<U>(callback: (inner: T) => Promiseable<U>): Promise<U> {
-    return await callback(this.inner)
+  async andThen<U>(okMapper: (inner: T) => Promiseable<U>): Promise<U> {
+    return await okMapper(this.inner)
   }
 
   /**
-   * Return `callback()` if `Ok`, return `this` if `Err`
-   * @param callback 
-   * @returns `callback()` if `Ok`, `this` if `Err`
-   * @throws if `callback()` throws
+   * Return `okMapper(this.inner)` if `Ok`, return `this` if `Err`
+   * @param okMapper 
+   * @returns `okMapper(this.inner)` if `Ok`, `this` if `Err`
+   * @throws if `okMapper(this.inner)` throws
    */
-  andThenSync<U>(callback: (inner: T) => U): U {
-    return callback(this.inner)
+  andThenSync<U>(okMapper: (inner: T) => U): U {
+    return okMapper(this.inner)
   }
 
   /**
-   * Return `or` if `Ok`, return `this` if `Err`
-   * @param or 
-   * @returns `or` if `Ok`, `this` if `Err`
+   * Return `value` if `Err`, return `this` if `Ok`
+   * @param value 
+   * @returns `value` if `Err`, `this` if `Ok`
    */
-  or(or: unknown): this {
+  or(value: unknown): this {
     return this
   }
 
   /**
-   * Return `await callback()` if `Ok`, return `this` if `Err`
-   * @param callback 
-   * @returns `await callback()` if `Ok`, `this` if `Err`
-   * @throws if `await callback()` throws
+   * Return `await errMapper(this.inner)` if `Err`, return `this` if `Ok`
+   * @param errMapper 
+   * @returns `await errMapper(this.inner)` if `Err`, `this` if `Ok`
+   * @throws if `await errMapper(this.inner)` throws
    */
-  orThen(callback: unknown): this {
+  orElse(errMapper: unknown): this {
     return this
   }
 
   /**
-   * Return `callback()` if `Ok`, return `this` if `Err`
-   * @param callback 
-   * @returns `callback()` if `Ok`, `this` if `Err`
-   * @throws if `callback()` throws
+   * Return `errMapper(this.inner)` if `Err`, return `this` if `Ok`
+   * @param errMapper 
+   * @returns `errMapper(this.inner)` if `Err`, `this` if `Ok`
+   * @throws if `errMapper(this.inner)` throws
    */
-  orThenSync(callback: unknown): this {
+  orElseSync(errMapper: unknown): this {
     return this
   }
 
