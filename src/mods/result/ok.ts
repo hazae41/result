@@ -193,6 +193,24 @@ export class Ok<T = unknown>  {
   }
 
   /**
+   * Calls the given callback with the inner value if `Err`
+   * @param errCallback 
+   * @returns `this`
+   */
+  async inspectErr(errCallback: unknown): Promise<this> {
+    return this
+  }
+
+  /**
+   * Calls the given callback with the inner value if `Err`
+   * @param errCallback 
+   * @returns `this`
+   */
+  inspectErrSync(errCallback: unknown): this {
+    return this
+  }
+
+  /**
    * Map the inner value into another
    * @param okMapper 
    * @returns `Ok(await okMapper(this.inner))` if `Ok`, `this` if `Err`
