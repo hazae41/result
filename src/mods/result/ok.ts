@@ -30,6 +30,10 @@ export class Ok<T = unknown>  {
     return new this<T>(inner)
   }
 
+  static wrap<T>(callback: () => T) {
+    return new this<T>(callback())
+  }
+
   /**
    * Type guard for `Ok`
    * @returns `true` if `Ok`, `false` if `Err`
