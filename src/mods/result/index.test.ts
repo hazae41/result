@@ -8,6 +8,5 @@ function tryVoid() {
 }
 
 function doNotRun(result: Result<string, Error>) {
-  for (const inner of result)
-    inner
+  result.andThenSync(tryVoid).unwrap()
 }
