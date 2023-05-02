@@ -39,10 +39,46 @@ export class Ok<T = unknown>  {
   }
 
   /**
+   * Returns true if the result is `Ok` and the value inside of it matches a predicate
+   * @param okPredicate 
+   * @returns `true` if `Ok` and `await okPredicate(this.inner)`, `false` otherwise
+   */
+  async isOkAnd(okPredicate: (inner: T) => Promiseable<boolean>): Promise<boolean> {
+    return await okPredicate(this.inner)
+  }
+
+  /**
+   * Returns true if the result is `Ok` and the value inside of it matches a predicate
+   * @param okPredicate 
+   * @returns `true` if `Ok` and `await okPredicate(this.inner)`, `false` otherwise
+   */
+  isOkAndSync(okPredicate: (inner: T) => boolean): boolean {
+    return okPredicate(this.inner)
+  }
+
+  /**
    * Type guard for `Err`
    * @returns `true` if `Err`, `false` if `Ok`
    */
   isErr(): false {
+    return false
+  }
+
+  /**
+   * Returns true if the result is `Err` and the value inside of it matches a predicate
+   * @param errPredicate 
+   * @returns `true` if `Err` and `await errPredicate(this.inner)`, `false` otherwise
+   */
+  async isErrAnd(errPredicate: unknown): Promise<boolean> {
+    return false
+  }
+
+  /**
+   * Returns true if the result is `Err` and the value inside of it matches a predicate
+   * @param errPredicate 
+   * @returns `true` if `Err` and `await errPredicate(this.inner)`, `false` otherwise
+   */
+  isErrAndSync(errPredicate: unknown): boolean {
     return false
   }
 
