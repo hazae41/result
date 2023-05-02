@@ -113,6 +113,32 @@ export class Err<T = unknown>  {
   }
 
   /**
+   * Returns an iterator over the possibly contained value
+   * @yields `this.inner` if `Ok`
+   */
+  *[Symbol.iterator](): Iterator<never, void> {
+    return
+  }
+
+  /**
+   * Returns true if the result is an `Ok` value containing the given value
+   * @param value 
+   * @returns `true` if `Ok` and `this.inner === value`, `false` otherwise
+   */
+  contains(value: unknown): false {
+    return false
+  }
+
+  /**
+   * Returns true if the result is an `Err` value containing the given value
+   * @param value 
+   * @returns `true` if `Err` and `this.inner === value`, `false` otherwise
+   */
+  containsErr(value: T): boolean {
+    return this.inner === value
+  }
+
+  /**
    * Just like `unwrap` but it throws `this` instead of `this.inner`
    * @returns `this.inner` if `Ok`
    * @throws `this` if `Err` 
@@ -121,6 +147,24 @@ export class Err<T = unknown>  {
    */
   throw(): never {
     throw this
+  }
+
+  /**
+   * Get the inner value or throw the inner error wrapped inside another Error
+   * @param message 
+   * @returns `this.inner` if `Ok`, `Error(message, { cause: this.inner })` if `Err`
+   */
+  expect(message: string): never {
+    throw new Error(message, { cause: this.inner })
+  }
+
+  /**
+   * Get the inner error or throw the inner value wrapped inside another Error
+   * @param message 
+   * @returns `this.inner` if `Err`, `Error(message, { cause: this.inner })` if `Ok`
+   */
+  expectErr(message: string): T {
+    return this.inner
   }
 
   /**
@@ -175,6 +219,44 @@ export class Err<T = unknown>  {
    * @returns `await this.inner` if `Ok`, `this` if `Err`
    */
   async await(): Promise<this> {
+    return this
+  }
+
+  /**
+   * Calls the given callback with the inner value if `Ok`
+   * @param okCallback 
+   * @returns `this`
+   */
+  inspect(okCallback: unknown): this {
+    return this
+  }
+
+  /**
+   * Calls the given callback with the inner value if `Ok`
+   * @param okCallback 
+   * @returns `this`
+   */
+  inspectSync(okCallback: unknown): this {
+    return this
+  }
+
+  /**
+   * Calls the given callback with the inner value if `Err`
+   * @param errCallback 
+   * @returns `this`
+   */
+  async inspectErr(errCallback: (inner: T) => Promiseable<void>): Promise<this> {
+    await errCallback(this.inner)
+    return this
+  }
+
+  /**
+   * Calls the given callback with the inner value if `Err`
+   * @param errCallback 
+   * @returns `this`
+   */
+  inspectErrSync(errCallback: (inner: T) => void): this {
+    errCallback(this.inner)
     return this
   }
 

@@ -8,5 +8,6 @@ function tryVoid() {
 }
 
 function doNotRun(result: Result<string, Error>) {
-  const result2 = result.unwrapOrElseSync(e => e.message)
+  for (const inner of result)
+    inner
 }

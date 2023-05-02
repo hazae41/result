@@ -63,6 +63,32 @@ export class Ok<T = unknown>  {
   }
 
   /**
+   * Returns an iterator over the possibly contained value
+   * @yields `this.inner` if `Ok`
+   */
+  *[Symbol.iterator](): Iterator<T, void> {
+    yield this.inner
+  }
+
+  /**
+   * Returns true if the result is an `Ok` value containing the given value
+   * @param value 
+   * @returns `true` if `Ok` and `this.inner === value`, `false` otherwise
+   */
+  contains(value: T): boolean {
+    return this.inner === value
+  }
+
+  /**
+   * Returns true if the result is an `Err` value containing the given value
+   * @param value 
+   * @returns `true` if `Err` and `this.inner === value`, `false` otherwise
+   */
+  containsErr(value: unknown): false {
+    return false
+  }
+
+  /**
    * Just like `unwrap` but it throws `this` instead of `this.inner`
    * @returns `this.inner` if `Ok`
    * @throws `this` if `Err` 
@@ -71,6 +97,24 @@ export class Ok<T = unknown>  {
    */
   throw(): T {
     return this.inner
+  }
+
+  /**
+   * Get the inner value or throw the inner error wrapped inside another Error
+   * @param message 
+   * @returns `this.inner` if `Ok`, `Error(message, { cause: this.inner })` if `Err`
+   */
+  expect(message: string): T {
+    return this.inner
+  }
+
+  /**
+   * Get the inner error or throw the inner value wrapped inside another Error
+   * @param message 
+   * @returns `this.inner` if `Err`, `Error(message, { cause: this.inner })` if `Ok`
+   */
+  expectErr(message: string): never {
+    throw new Error(message, { cause: this.inner })
   }
 
   /**
@@ -126,6 +170,26 @@ export class Ok<T = unknown>  {
    */
   async await(): Promise<Ok<Awaited<T>>> {
     return new Ok(await this.inner)
+  }
+
+  /**
+   * Calls the given callback with the inner value if `Ok`
+   * @param okCallback 
+   * @returns `this`
+   */
+  async inspect(okCallback: (inner: T) => Promiseable<void>): Promise<this> {
+    await okCallback(this.inner)
+    return this
+  }
+
+  /**
+   * Calls the given callback with the inner value if `Ok`
+   * @param okCallback 
+   * @returns `this`
+   */
+  inspectSync(okCallback: (inner: T) => void): this {
+    okCallback(this.inner)
+    return this
   }
 
   /**
