@@ -114,11 +114,20 @@ export namespace Result {
   }
 
   /**
-   * Unwrap all elements from `iterable`
+   * Transform `Iterable<Result<T,E>` into `Result<Array<T>, E>`
    * @param iterable 
-   * @returns 
+   * @returns `Result<Array<T>, E>`
    */
-  export function* all<T, E>(iterable: Iterable<Result<T, E>>): Iterator<T, Result<void, E>> {
+  export function all<T, E>(iterable: Iterable<Result<T, E>>): Result<Array<T>, E> {
+    return collect(iterate(iterable))
+  }
+
+  /**
+   * Transform `Iterable<Result<T,E>` into `Iterator<T, Result<void, E>>`
+   * @param iterable 
+   * @returns `Iterator<T, Result<void, E>>`
+   */
+  export function* iterate<T, E>(iterable: Iterable<Result<T, E>>): Iterator<T, Result<void, E>> {
     for (const result of iterable) {
       if (result.isOk())
         yield result.inner
@@ -127,6 +136,24 @@ export namespace Result {
     }
 
     return Ok.void()
+  }
+
+  /**
+   * Transform `Iterator<T, Result<void, E>>` into `Result<Array<T>, E>`
+   * @param iterator `Result<Array<T>, E>`
+   */
+  export function collect<T, E>(iterator: Iterator<T, Result<void, E>>): Result<Array<T>, E> {
+    const array = new Array<T>()
+
+    let result: IteratorResult<T, Result<void, E>>
+
+    while (!(result = iterator.next()).done)
+      array.push(result.value)
+
+    if (result.value.isErr())
+      return result.value
+
+    return new Ok(array)
   }
 
 }
