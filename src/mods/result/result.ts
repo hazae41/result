@@ -113,4 +113,20 @@ export namespace Result {
     }
   }
 
+  /**
+   * Unwrap all elements from `iterable`
+   * @param iterable 
+   * @returns 
+   */
+  export function* all<T, E>(iterable: Iterable<Result<T, E>>): Iterator<T, Result<void, E>> {
+    for (const result of iterable) {
+      if (result.isOk())
+        yield result.inner
+      else
+        return result
+    }
+
+    return Ok.void()
+  }
+
 }
