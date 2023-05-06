@@ -107,6 +107,14 @@ export class Ok<T = unknown>  {
   }
 
   /**
+   * Transform `Result<T,E>` into `[T,E]`
+   * @returns `[this.inner, undefined]` if `Ok`, `[undefined, this.inner]` if `Err`
+   */
+  split(): [T, undefined] {
+    return [this.inner, undefined]
+  }
+
+  /**
    * Returns true if the result is an `Ok` value containing the given value
    * @param value 
    * @returns `true` if `Ok` and `this.inner === value`, `false` otherwise

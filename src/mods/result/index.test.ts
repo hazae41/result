@@ -3,8 +3,8 @@ import { Err } from "./err.js";
 import { Ok } from "./ok.js";
 import { Result } from "./result.js";
 
-function doNotRun(result: Result<string, Error>) {
-  result.mapOr("hello", () => "world")
+function doNotRun(result: Result<string, Error>, results: Result<string, Error>[]) {
+  result.ok().inner
 }
 
 class CustomError extends Error {
@@ -26,12 +26,6 @@ await test("try-catch", async ({ message }) => {
 
     return Ok.void()
   })), `Should have been catched`)
-
-  // assert(throws(() => Result.unthrowSync<void, CustomError>(t => {
-  //   new Err(new Error()).throw(t)
-
-  //   return Ok.void()
-  // })), `Should type error`)
 
   console.log(message)
 })
