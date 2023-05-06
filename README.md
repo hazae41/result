@@ -256,23 +256,11 @@ You can do so by using `Err.throw` and `Result.unthrow`
 - `Result.unthrow(callback)` will try-catch `callback`, check if the catched `e` is an instance of `Err` and return it, else it will rethrow `e`
 
 ```tsx
-return Result.unthrowSync(() => {
-  const x = tryDoSomething().throw() // will throw Err instead of Err.inner
-  const y = tryDoSomething().throw() // will throw Err instead of Err.inner
-  const z = tryDoSomething().throw() // will throw Err instead of Err.inner
+return Result.unthrowSync<void, Error>(t => {
+  const x = tryDoSomething().throw(t) // will throw Err instead of Err.inner
+  const y = tryDoSomething().throw(t) // will throw Err instead of Err.inner
+  const z = tryDoSomething().throw(t) // will throw Err instead of Err.inner
 
   return new Ok(doSomethingThatThrows(x, y, z))
-}) // only return Err<unknown>, rethrow everything else
-```
-
-You can also type check the inner value of `Err` with `Result.unthrow(callback, ...types)`
-
-```tsx
-return Result.unthrowSync(() => {
-  const x = tryDoSomething().throw() // will throw Err instead of Err.inner
-  const y = tryDoSomething().throw() // will throw Err instead of Err.inner
-  const z = tryDoSomething().throw() // will throw Err instead of Err.inner
-
-  return new Ok(doSomethingThatThrows(x, y, z))
-}, DOMException, MyError) // only return Err<DOMException | MyError>, rethrow everything else
+}) // only return Err<Error>, rethrow everything else
 ```

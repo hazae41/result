@@ -60,27 +60,6 @@ export class Err<T = unknown>  {
   }
 
   /**
-   * Try to cast `err` into `Err`, try to cast `err.inner` into one of the `types`, and return `err`, throw `err` if unable to do so
-   * @param err 
-   * @param types
-   * @returns `err` if `err instanceof Err` and `err.inner instanceof type` for some `type` in `types`
-   * @throws `err` if unable to do so
-   */
-  static castOrThrow<T>(err: unknown, ...types: Class<T>[]): Err<T> {
-    if (!(err instanceof Err))
-      throw err
-
-    if (!types.length)
-      return err as Err<T>
-
-    for (const type of types)
-      if (err.inner instanceof type)
-        return err as Err<T>
-
-    throw err
-  }
-
-  /**
    * Type guard for `Ok`
    * @returns `true` if `Ok`, `false` if `Err`
    */
@@ -175,14 +154,16 @@ export class Err<T = unknown>  {
   }
 
   /**
-   * Just like `unwrap` but it throws `this` instead of `this.inner`
+   * Get the inner value or throw to the closest `Result.unthrow`
+   * @param thrower The thrower from `Result.unthrow`
    * @returns `this.inner` if `Ok`
-   * @throws `this` if `Err` 
+   * @throws `undefined` if `Err` 
    * @see Result.unthrow
    * @see Result.unthrowSync
    */
-  throw(): never {
-    throw this
+  throw(thrower: (e: Err<T>) => void): never {
+    thrower(this)
+    throw undefined
   }
 
   /**

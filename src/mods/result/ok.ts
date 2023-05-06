@@ -125,13 +125,13 @@ export class Ok<T = unknown>  {
   }
 
   /**
-   * Just like `unwrap` but it throws `this` instead of `this.inner`
+   * Just like `unwrap` but it throws to the closest `Result.unthrow`
    * @returns `this.inner` if `Ok`
    * @throws `this` if `Err` 
    * @see Result.unthrow
    * @see Result.unthrowSync
    */
-  throw(): T {
+  throw(thrower: unknown): T {
     return this.inner
   }
 

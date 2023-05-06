@@ -7,37 +7,31 @@ function doNotRun(result: Result<string, Error>) {
   result.mapOr("hello", () => "world")
 }
 
-class FirstError extends Error {
-  name = "first"
-}
+class CustomError extends Error {
+  readonly #class = CustomError
 
-class SecondError extends Error {
-  name = "second"
+  constructor(x: number) {
+    super(`first`)
+  }
 }
 
 await test("try-catch", async ({ message }) => {
 
-  assert(throws(() => Result.unthrowSync(() => {
+  assert(throws(() => Result.unthrowSync(t => {
     throw new Error()
-  }, Error)), `Should have not been catched`)
+  })), `Should have not been catched`)
 
-  assert(!throws(() => Result.unthrowSync(() => {
-    new Err(new Error()).throw()
+  assert(!throws(() => Result.unthrowSync<void, Error>(t => {
+    new Err(new Error()).throw(t)
 
     return Ok.void()
   })), `Should have been catched`)
 
-  assert(!throws(() => Result.unthrowSync(() => {
-    new Err(new Error()).throw()
+  // assert(throws(() => Result.unthrowSync<void, CustomError>(t => {
+  //   new Err(new Error()).throw(t)
 
-    return Ok.void()
-  }, Error, TypeError)), `Should have been catched`)
-
-  assert(throws(() => Result.unthrowSync<void, FirstError | SecondError>(() => {
-    new Err(new Error()).throw()
-
-    return Ok.void()
-  }, FirstError, SecondError)), `Should have not been catched`)
+  //   return Ok.void()
+  // })), `Should type error`)
 
   console.log(message)
 })

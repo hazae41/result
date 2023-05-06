@@ -64,11 +64,15 @@ export namespace Result {
    * @returns `Ok<T>` if no `Err` was thrown, `Err<E>` otherwise
    * @see Err.throw
    */
-  export async function unthrow<T, E>(callback: () => Promiseable<Result<T, E>>, ...types: Class<E>[]) {
+  export async function unthrow<T, E>(callback: (thrower: (e: Err<E>) => void) => Promiseable<Result<T, E>>) {
+    let ref: Err<E> | undefined
+
     try {
-      return await callback()
+      return await callback((e: Err<E>) => ref = e)
     } catch (e: unknown) {
-      return Err.castOrThrow(e, ...types)
+      if (ref !== undefined)
+        return ref
+      throw e
     }
   }
 
@@ -79,11 +83,15 @@ export namespace Result {
    * @returns `Ok<T>` if no `Err` was thrown, `Err<E>` otherwise
    * @see Err.throw
    */
-  export function unthrowSync<T, E>(callback: () => Result<T, E>, ...types: Class<E>[]) {
+  export function unthrowSync<T, E>(callback: (thrower: (e: Err<E>) => void) => Result<T, E>) {
+    let ref: Err<E> | undefined
+
     try {
-      return callback()
+      return callback((e: Err<E>) => ref = e)
     } catch (e: unknown) {
-      return Err.castOrThrow(e, ...types)
+      if (ref !== undefined)
+        return ref
+      throw e
     }
   }
 
