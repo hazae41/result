@@ -222,26 +222,9 @@ But, sometimes, you want to do a bunch of actions, unwrap everything, catch ever
  * BAD EXAMPLE
  **/
 try {
-  const x = tryDoSomething().unwrap() // lazy unwrap
-  const y = tryDoSomething().unwrap() // lazy unwrap
-  const z = tryDoSomething().unwrap() // lazy unwrap
-
-  return new Ok(doSomething(x, y, z))
-} catch(e: unknown) {
-  return new Err(e as Error)
-}
-```
-
-But what if you only want to catch errors thrown from unwrap(), and not errors coming from real throws
-
-```tsx
-/**
- * BAD EXAMPLE
- **/
-try {
   const x = tryDoSomething().unwrap()
   const y = tryDoSomething().unwrap()
-  const z = tryDoSomething().unwrap()
+  const z = tryDoSomething().unwrap() 
 
   return new Ok(doSomethingThatThrows(x, y, z))
 } catch(e: unknown) {
@@ -249,18 +232,16 @@ try {
 }
 ```
 
-You can do so by using `Err.throw` and `Result.unthrow`
+But what if you only want to catch errors thrown from `Err.unwrap()`, and not errors coming from `doSomethingThatThrows()`?
 
-- `Err.throw()` will return `Ok.inner` or throw the `Err` (it will throw `Err` itself, not the inner value), it is similar to `?` in Rust
-
-- `Result.unthrow(callback)` will try-catch `callback`, check if the catched `e` is an instance of `Err` and return it, else it will rethrow `e`
+You can do so by using `Result.unthrow()`, it will do a try-catch but only catch errors coming from `Err.throw()`
 
 ```tsx
 return Result.unthrowSync<void, Error>(t => {
-  const x = tryDoSomething().throw(t) // will throw Err instead of Err.inner
-  const y = tryDoSomething().throw(t) // will throw Err instead of Err.inner
-  const z = tryDoSomething().throw(t) // will throw Err instead of Err.inner
+  const x = tryDoSomething().throw(t) 
+  const y = tryDoSomething().throw(t)
+  const z = tryDoSomething().throw(t)
 
   return new Ok(doSomethingThatThrows(x, y, z))
-}) // only return Err<Error>, rethrow everything else
+})
 ```
