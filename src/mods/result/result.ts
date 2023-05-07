@@ -11,7 +11,7 @@ export type Result<T = unknown, E = unknown> =
   | Ok<T>
   | Err<E>
 
-export type VoidResult<E = unknown> =
+export type Void<E = unknown> =
   | void
   | Ok<void>
   | Err<E>
