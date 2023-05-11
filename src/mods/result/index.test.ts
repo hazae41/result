@@ -4,7 +4,7 @@ import { Ok } from "./ok.js";
 import { Result } from "./result.js";
 
 function doNotRun(result: Result<string, Error>, results: Result<string, Error>[]) {
-  result.ok().inner
+  result.clear()
 }
 
 class CustomError extends Error {
