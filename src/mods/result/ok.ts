@@ -217,6 +217,22 @@ export class Ok<T = unknown>  {
   }
 
   /**
+   * Transform `Result<T, E>` into `Result<void, E>`
+   * @returns `Ok<void>` if `Ok<T>`, `Err<E>` if `E<E>`
+   */
+  clear(): Ok<void> {
+    return Ok.void()
+  }
+
+  /**
+   * Transform `Result<T, E>` into `Result<T, void>`
+   * @returns `Ok<T>` if `Ok<T>`, `Err<void>` if `E<E>`
+   */
+  clearErr(): this {
+    return this
+  }
+
+  /**
    * Calls the given callback with the inner value if `Ok`
    * @param okCallback 
    * @returns `this`
