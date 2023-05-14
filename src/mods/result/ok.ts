@@ -83,6 +83,14 @@ export class Ok<T = unknown>  {
   }
 
   /**
+   * Compile-time safely get `this.inner` if `Ok`
+   * @returns `this.inner`
+   */
+  get() {
+    return this.inner
+  }
+
+  /**
    * Transform `Result<T, E>` into `Option<T>`
    * @returns `Some(this.inner)` if `Ok`, `None` if `Err`
    */

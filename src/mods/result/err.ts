@@ -112,6 +112,14 @@ export class Err<T = unknown>  {
   }
 
   /**
+   * Compile-time safely get `this.inner` if `Err`
+   * @returns `this.inner`
+   */
+  getErr() {
+    return this.inner
+  }
+
+  /**
    * Transform `Result<T, E>` into `Option<T>`
    * @returns `Some(this.inner)` if `Ok`, `None` if `Err`
    */

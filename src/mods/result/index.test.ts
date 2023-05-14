@@ -4,7 +4,10 @@ import { Ok } from "./ok.js";
 import { Result } from "./result.js";
 
 function doNotRun(result: Result<string, Error>, results: Result<string, Error>[]) {
-  result.clear()
+  if (result.isOk())
+    result.get()
+  else
+    result.getErr()
 }
 
 class CustomError extends Error {
