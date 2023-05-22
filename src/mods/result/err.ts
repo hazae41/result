@@ -1,6 +1,7 @@
 import { None, Some } from "@hazae41/option"
 import { Promiseable } from "libs/promises/promises.js"
 import { Class } from "libs/reflection/reflection.js"
+import { Debug } from "mods/debug/debug.js"
 
 export type ErrInner<E> = E extends Err<infer T> ? T : never
 
@@ -15,6 +16,8 @@ export class Err<T = unknown>  {
   constructor(
     readonly inner: T
   ) {
+    if (!Debug.debug) return
+
     const { stack } = new Error()
 
     this.#timeout = setTimeout(() => {
@@ -71,6 +74,9 @@ export class Err<T = unknown>  {
    * Set this result as handled
    */
   ignore(): this {
+    if (!this.#timeout)
+      return this
+
     clearTimeout(this.#timeout)
     this.#timeout = undefined
 

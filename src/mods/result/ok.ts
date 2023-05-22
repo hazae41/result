@@ -1,5 +1,6 @@
 import { None, Some } from "@hazae41/option"
 import { Promiseable } from "libs/promises/promises.js"
+import { Debug } from "mods/debug/debug.js"
 
 export type OkInner<O> = O extends Ok<infer T> ? T : never
 
@@ -14,6 +15,8 @@ export class Ok<T = unknown>  {
   constructor(
     readonly inner: T
   ) {
+    if (!Debug.debug) return
+
     const { stack } = new Error()
 
     this.#timeout = setTimeout(() => {
@@ -42,6 +45,9 @@ export class Ok<T = unknown>  {
    * Set this result as handled
    */
   ignore(): this {
+    if (!this.#timeout)
+      return this
+
     clearTimeout(this.#timeout)
     this.#timeout = undefined
 
