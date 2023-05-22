@@ -6,8 +6,6 @@ import { Result } from "./result.js";
 function doNotRun(result: Result<string, Error>, results: Result<string, Error>[]) {
   if (result.isOk())
     result.get()
-  else
-    result.getErr()
 }
 
 class CustomError extends Error {
@@ -28,7 +26,7 @@ await test("try-catch", async ({ message }) => {
     new Err(new Error()).throw(t)
 
     return Ok.void()
-  })), `Should have been catched`)
+  }).ignore()), `Should have been catched`)
 
   console.log(message)
 })
@@ -48,8 +46,8 @@ function* errGenerator() {
 }
 
 await test("iterators", async () => {
-  const ok = Result.all(okGenerator())
-  const err = Result.all(errGenerator())
+  const ok = Result.all(okGenerator()).ignore()
+  const err = Result.all(errGenerator()).ignore()
 
   assert(ok.isOkAndSync(inner => JSON.stringify(inner) === JSON.stringify([1, 2, 3, 4])))
   assert(err.isErrAndSync(inner => inner === 3))

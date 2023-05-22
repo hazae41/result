@@ -6,13 +6,21 @@ export type ErrInner<E> = E extends Err<infer T> ? T : never
 
 export class Err<T = unknown>  {
 
+  #timeout?: NodeJS.Timeout
+
   /**
    * A failure
    * @param inner 
    */
   constructor(
     readonly inner: T
-  ) { }
+  ) {
+    const { stack } = new Error()
+
+    this.#timeout = setTimeout(() => {
+      console.error(`Unhandled Err result ${this.inner}`, stack)
+    }, 1000)
+  }
 
   /**
    * Create an empty `Err`
@@ -57,6 +65,16 @@ export class Err<T = unknown>  {
         return new this(inner) as Err<T>
 
     throw inner
+  }
+
+  /**
+   * Set this result as handled
+   */
+  ignore(): this {
+    clearTimeout(this.#timeout)
+    this.#timeout = undefined
+
+    return this
   }
 
   /**
@@ -112,10 +130,12 @@ export class Err<T = unknown>  {
   }
 
   /**
-   * Compile-time safely get `this.inner` if `Err`
+   * Compile-time safely get `this.inner`
    * @returns `this.inner`
    */
-  getErr() {
+  get() {
+    this.ignore()
+
     return this.inner
   }
 
@@ -124,6 +144,8 @@ export class Err<T = unknown>  {
    * @returns `Some(this.inner)` if `Ok`, `None` if `Err`
    */
   ok(): None {
+    this.ignore()
+
     return new None()
   }
 
@@ -132,6 +154,8 @@ export class Err<T = unknown>  {
    * @returns `Some(this.inner)` if `Err`, `None` if `Ok`
    */
   err(): Some<T> {
+    this.ignore()
+
     return new Some(this.inner)
   }
 
@@ -140,6 +164,8 @@ export class Err<T = unknown>  {
    * @yields `this.inner` if `Ok`
    */
   *[Symbol.iterator](): Iterator<never, void> {
+    this.ignore()
+
     return
   }
 
@@ -148,6 +174,8 @@ export class Err<T = unknown>  {
    * @returns `[this.inner, undefined]` if `Ok`, `[undefined, this.inner]` if `Err`
    */
   split(): [undefined, T] {
+    this.ignore()
+
     return [undefined, this.inner]
   }
 
@@ -188,6 +216,8 @@ export class Err<T = unknown>  {
    * @returns `this.inner` if `Ok`, `Error(message, { cause: this.inner })` if `Err`
    */
   expect(message: string): never {
+    this.ignore()
+
     throw new Error(message, { cause: this.inner })
   }
 
@@ -197,6 +227,8 @@ export class Err<T = unknown>  {
    * @returns `this.inner` if `Err`, `Error(message, { cause: this.inner })` if `Ok`
    */
   expectErr(message: string): T {
+    this.ignore()
+
     return this.inner
   }
 
@@ -206,6 +238,8 @@ export class Err<T = unknown>  {
    * @throws `this.inner` if `Err` 
    */
   unwrap(): never {
+    this.ignore()
+
     throw this.inner
   }
 
@@ -215,6 +249,8 @@ export class Err<T = unknown>  {
    * @throws `this.inner` if `Ok` 
    */
   unwrapErr(): T {
+    this.ignore()
+
     return this.inner
   }
 
@@ -224,6 +260,8 @@ export class Err<T = unknown>  {
    * @returns `this.inner` if `Ok`, `value` if `Err`
    */
   unwrapOr<U>(value: U): U {
+    this.ignore()
+
     return value
   }
 
@@ -234,6 +272,8 @@ export class Err<T = unknown>  {
    * @throws if `await errMapper(this.inner)` throws
    */
   async unwrapOrElse<U>(errMapper: (inner: T) => Promiseable<U>): Promise<U> {
+    this.ignore()
+
     return await errMapper(this.inner)
   }
 
@@ -244,6 +284,8 @@ export class Err<T = unknown>  {
    * @throws if `errMapper(this.inner)` throws
    */
   unwrapOrElseSync<U>(errMapper: (inner: T) => U): U {
+    this.ignore()
+
     return errMapper(this.inner)
   }
 
@@ -268,6 +310,8 @@ export class Err<T = unknown>  {
    * @returns `Ok<T>` if `Ok<T>`, `Err<void>` if `E<E>`
    */
   clearErr(): Err<void> {
+    this.ignore()
+
     return Err.void()
   }
 
@@ -336,6 +380,8 @@ export class Err<T = unknown>  {
    * @throws if `await errMapper(this.inner)` throws
    */
   async mapErr<U>(errMapper: (inner: T) => Promiseable<U>): Promise<Err<U>> {
+    this.ignore()
+
     return new Err<U>(await errMapper(this.inner))
   }
 
@@ -346,6 +392,8 @@ export class Err<T = unknown>  {
    * @throws if `errMapper(this.inner)` throws
    */
   mapErrSync<U>(errMapper: (inner: T) => U): Err<U> {
+    this.ignore()
+
     return new Err<U>(errMapper(this.inner))
   }
 
@@ -357,6 +405,8 @@ export class Err<T = unknown>  {
    * @throws if `await okMapper(this.inner)` throws
    */
   async mapOr<U>(value: U, okMapper: unknown): Promise<U> {
+    this.ignore()
+
     return value
   }
 
@@ -368,6 +418,8 @@ export class Err<T = unknown>  {
    * @throws if `okMapper(this.inner)` throws
    */
   mapOrSync<U>(value: U, okMapper: unknown): U {
+    this.ignore()
+
     return value
   }
 
@@ -379,6 +431,8 @@ export class Err<T = unknown>  {
    * @throws if `await okMapper(this.inner)` or `await errMapper(this.inner)` throws
    */
   async mapOrElse<U>(errMapper: (inner: T) => Promiseable<U>, okMapper: unknown): Promise<U> {
+    this.ignore()
+
     return await errMapper(this.inner)
   }
 
@@ -390,6 +444,8 @@ export class Err<T = unknown>  {
    * @throws if `okMapper(this.inner)` or `errMapper(this.inner)` throws
    */
   mapOrElseSync<U>(errMapper: (inner: T) => U, okMapper: unknown): U {
+    this.ignore()
+
     return errMapper(this.inner)
   }
 
@@ -428,6 +484,8 @@ export class Err<T = unknown>  {
    * @returns `value` if `Err`, `this` if `Ok`
    */
   or<U>(value: U): U {
+    this.ignore()
+
     return value
   }
 
@@ -438,6 +496,8 @@ export class Err<T = unknown>  {
    * @throws if `await errMapper(this.inner)` throws
    */
   async orElse<U>(errMapper: (inner: T) => Promiseable<U>): Promise<U> {
+    this.ignore()
+
     return await errMapper(this.inner)
   }
 
@@ -448,6 +508,8 @@ export class Err<T = unknown>  {
    * @throws if `errMapper(this.inner)` throws
    */
   orElseSync<U>(errMapper: (inner: T) => U): U {
+    this.ignore()
+
     return errMapper(this.inner)
   }
 

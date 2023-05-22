@@ -142,7 +142,7 @@ export namespace Result {
   export function* iterate<T, E>(iterable: Iterable<Result<T, E>>): Iterator<T, Result<void, E>> {
     for (const result of iterable) {
       if (result.isOk())
-        yield result.inner
+        yield result.get()
       else
         return result
     }
@@ -157,15 +157,12 @@ export namespace Result {
   export function collect<T, E>(iterator: Iterator<T, Result<void, E>>): Result<Array<T>, E> {
     const array = new Array<T>()
 
-    let result: IteratorResult<T, Result<void, E>>
+    let result = iterator.next()
 
-    while (!(result = iterator.next()).done)
+    for (; !result.done; result = iterator.next())
       array.push(result.value)
 
-    if (result.value.isErr())
-      return result.value
-
-    return new Ok(array)
+    return result.value.mapSync(() => array)
   }
 
 }
