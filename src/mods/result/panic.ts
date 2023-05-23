@@ -22,4 +22,15 @@ export namespace Panic {
     return error as Exclude<T, Panic>
   }
 
+  /**
+   * Convert error to `Panic` if not already
+   * @param error 
+   * @returns `error` if `Panic`, `Panic.from(error)` otherwise
+   */
+  export function castOrFrom(error: unknown) {
+    if (error instanceof Panic)
+      return error
+    return Panic.from(error)
+  }
+
 }
