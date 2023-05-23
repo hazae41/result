@@ -1,5 +1,6 @@
 export class Panic extends Error {
   readonly #class = Panic
+  readonly name = this.#class.name
 }
 
 export namespace Panic {
