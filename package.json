@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@hazae41/result",
-  "version": "1.0.27",
+  "version": "1.0.28",
   "description": "Rust-like Result for TypeScript",
   "homepage": "https://github.com/hazae41/result",
   "repository": "github:hazae41/result",
