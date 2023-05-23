@@ -5,10 +5,10 @@ export class Panic extends Error {
 
 export namespace Panic {
 
-  export function warnOrThrow(e: unknown) {
+  export function unthrow(e: unknown) {
     if (e instanceof Panic)
       throw e
-    console.warn(e)
+    return e
   }
 
 }
