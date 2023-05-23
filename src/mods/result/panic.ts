@@ -11,7 +11,7 @@ export namespace Panic {
    * @returns error if not `Panic`
    * @throws error if `Panic`
    */
-  export function unthrow<T>(error: T): Exclude<T, Panic> {
+  export function rethrow<T>(error: T): Exclude<T, Panic> {
     if (error instanceof Panic)
       throw error
     return error as Exclude<T, Panic>

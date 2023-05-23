@@ -1,6 +1,7 @@
 import { None, Some } from "@hazae41/option"
 import { Promiseable } from "libs/promises/promises.js"
 import { Debug } from "mods/debug/debug.js"
+import { Panic } from "./panic.js"
 
 export type OkInner<O> = O extends Ok<infer T> ? T : never
 
@@ -20,7 +21,7 @@ export class Ok<T = unknown>  {
     const { stack } = new Error()
 
     this.#timeout = setTimeout(() => {
-      console.error(`Unhandled Ok result ${this.inner}`, stack)
+      console.error(`Unhandled Ok result`, this.inner, stack)
     }, 1000)
   }
 
@@ -206,7 +207,7 @@ export class Ok<T = unknown>  {
   expectErr(message: string): never {
     this.ignore()
 
-    throw new Error(message, { cause: this.inner })
+    throw new Panic(message, { cause: this.inner })
   }
 
   /**
@@ -228,7 +229,7 @@ export class Ok<T = unknown>  {
   unwrapErr(): never {
     this.ignore()
 
-    throw this.inner
+    throw new Panic(undefined, { cause: this.inner })
   }
 
   /**

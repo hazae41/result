@@ -2,6 +2,7 @@ import { None, Some } from "@hazae41/option"
 import { Promiseable } from "libs/promises/promises.js"
 import { Class } from "libs/reflection/reflection.js"
 import { Debug } from "mods/debug/debug.js"
+import { Panic } from "./panic.js"
 
 export type ErrInner<E> = E extends Err<infer T> ? T : never
 
@@ -21,7 +22,7 @@ export class Err<T = unknown>  {
     const { stack } = new Error()
 
     this.#timeout = setTimeout(() => {
-      console.error(`Unhandled Err result ${this.inner}`, stack)
+      console.error(`Unhandled Err result`, this.inner, stack)
     }, 1000)
   }
 
@@ -213,7 +214,8 @@ export class Err<T = unknown>  {
    */
   throw(thrower: (e: Err<T>) => void): never {
     thrower(this)
-    throw undefined
+
+    throw new Panic(`Thrown result was try-catched`)
   }
 
   /**
@@ -224,7 +226,7 @@ export class Err<T = unknown>  {
   expect(message: string): never {
     this.ignore()
 
-    throw new Error(message, { cause: this.inner })
+    throw new Panic(message, { cause: this.inner })
   }
 
   /**
@@ -246,7 +248,7 @@ export class Err<T = unknown>  {
   unwrap(): never {
     this.ignore()
 
-    throw this.inner
+    throw new Panic(undefined, { cause: this.inner })
   }
 
   /**
