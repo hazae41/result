@@ -19,11 +19,8 @@ export class Err<T = unknown>  {
   ) {
     if (!Debug.debug) return
 
-    const { stack } = new Error()
-
-    this.#timeout = setTimeout(() => {
-      console.error(`Unhandled Err result`, this.inner, stack)
-    }, 1000)
+    const error = new Panic(`Unhandled result`, { cause: this })
+    this.#timeout = setTimeout(async () => { throw error }, 1000)
   }
 
   /**

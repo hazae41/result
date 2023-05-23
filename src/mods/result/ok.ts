@@ -18,11 +18,8 @@ export class Ok<T = unknown>  {
   ) {
     if (!Debug.debug) return
 
-    const { stack } = new Error()
-
-    this.#timeout = setTimeout(() => {
-      console.error(`Unhandled Ok result`, this.inner, stack)
-    }, 1000)
+    const error = new Panic(`Unhandled result`, { cause: this })
+    this.#timeout = setTimeout(async () => { throw error }, 1000)
   }
 
   /**
