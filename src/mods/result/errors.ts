@@ -1,3 +1,8 @@
+export class Unimplemented extends Error {
+  readonly #class = Unimplemented
+  readonly name = this.#class.name
+}
+
 export class Panic extends Error {
   readonly #class = Panic
   readonly name = this.#class.name

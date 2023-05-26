@@ -1,7 +1,7 @@
 import { None, Some } from "@hazae41/option"
 import { Promiseable } from "libs/promises/promises.js"
 import { Debug } from "mods/debug/debug.js"
-import { Panic } from "./panic.js"
+import { Panic } from "./errors.js"
 
 export type OkInner<O> = O extends Ok<infer T> ? T : never
 

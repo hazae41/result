@@ -2,7 +2,7 @@ import { None, Some } from "@hazae41/option"
 import { Promiseable } from "libs/promises/promises.js"
 import { Class } from "libs/reflection/reflection.js"
 import { Debug } from "mods/debug/debug.js"
-import { Panic } from "./panic.js"
+import { Panic } from "./errors.js"
 
 export type ErrInner<E> = E extends Err<infer T> ? T : never
 
