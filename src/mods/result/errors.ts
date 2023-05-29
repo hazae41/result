@@ -12,3 +12,17 @@ export class Panic extends Error {
   }
 
 }
+
+export class Catched extends Error {
+  readonly #class = Catched
+  readonly name = this.#class.name
+
+  static from(cause: unknown) {
+    return new Catched(undefined, { cause })
+  }
+
+  static fromAndThrow(cause: unknown): never {
+    throw Catched.from(cause)
+  }
+
+}

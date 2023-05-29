@@ -1,6 +1,7 @@
 import { Promiseable } from "libs/promises/promises.js"
 import { Class } from "libs/reflection/reflection.js"
 import { Err, ErrInner } from "./err.js"
+import { Catched } from "./errors.js"
 import { Ok, OkInner } from "./ok.js"
 
 export interface Wrapper<T = unknown> {
@@ -165,4 +166,16 @@ export namespace Result {
     return result.value.mapSync(() => array)
   }
 
+
+  /**
+   * Rethrow `CatchedError`
+   * @param error 
+   * @returns `Err(error)` if not `CatchedError` 
+   * @throws `error.cause` if `CatchedError` 
+   */
+  export function rethrow(error: unknown) {
+    if (error instanceof Catched)
+      throw error.cause
+    return new Err(error)
+  }
 }
