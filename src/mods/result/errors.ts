@@ -11,6 +11,10 @@ export class Panic extends Error {
     return new Panic(undefined, { cause })
   }
 
+  static fromAndThrow(cause: unknown): never {
+    throw Panic.from(cause)
+  }
+
 }
 
 export class Catched extends Error {
