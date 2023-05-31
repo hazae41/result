@@ -3,7 +3,13 @@ import { Promiseable } from "libs/promises/promises.js"
 import { Debug } from "mods/debug/debug.js"
 import { Panic } from "./errors.js"
 
-export type OkInner<O> = O extends Ok<infer T> ? T : never
+export namespace Ok {
+
+  export type Infer<T> = Ok<Inner<T>>
+
+  export type Inner<T> = T extends Ok<infer Inner> ? Inner : never
+
+}
 
 export class Ok<T = unknown>  {
 

@@ -4,7 +4,13 @@ import { Class } from "libs/reflection/reflection.js"
 import { Debug } from "mods/debug/debug.js"
 import { Panic } from "./errors.js"
 
-export type ErrInner<E> = E extends Err<infer T> ? T : never
+export namespace Err {
+
+  export type Infer<T> = Err<Inner<T>>
+
+  export type Inner<T> = T extends Err<infer Inner> ? Inner : never
+
+}
 
 export class Err<T = unknown>  {
 
