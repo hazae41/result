@@ -166,6 +166,47 @@ export namespace Result {
     return result.value.mapSync(() => array)
   }
 
+  /**
+   * Call the callback:
+   * - if it throws, wrap the thrown error into `Catched` and throw it
+   * - if the result is `Err`, unwrap it and throw it 
+   * - if the result is `Ok`, unwrap it and return it
+   * @param callback 
+   * @returns `T` if `Ok`
+   * @throws `Catched` if `callback()` throws, `E` if `Err`
+   */
+  export async function catchAndUnwrap<T, E>(callback: () => Promise<Result<T, E>>) {
+    let result: Result<T, E>
+
+    try {
+      result = await callback()
+    } catch (e: unknown) {
+      throw Catched.from(e)
+    }
+
+    return result.unwrap()
+  }
+
+  /**
+   * Call the callback:
+   * - if it throws, wrap the thrown error into `Catched` and throw it
+   * - if the result is `Err`, unwrap it and throw it 
+   * - if the result is `Ok`, unwrap it and return it
+   * @param callback 
+   * @returns `T` if `Ok`
+   * @throws `Catched` if `callback()` throws, `E` if `Err`
+   */
+  export function catchAndUnwrapSync<T, E>(callback: () => Result<T, E>) {
+    let result: Result<T, E>
+
+    try {
+      result = callback()
+    } catch (e: unknown) {
+      throw Catched.from(e)
+    }
+
+    return result.unwrap()
+  }
 
   /**
    * Rethrow `CatchedError`
