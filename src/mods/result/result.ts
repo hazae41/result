@@ -126,6 +126,32 @@ export namespace Result {
   }
 
   /**
+   * Catch
+   * @param callback 
+   * @returns 
+   */
+  export async function recatch<T, E>(callback: () => Promiseable<Result<T, E>>): Promise<Result<T, Catched | E>> {
+    try {
+      return await callback()
+    } catch (e: unknown) {
+      return new Err(Catched.from(e))
+    }
+  }
+
+  /**
+   * Catch
+   * @param callback 
+   * @returns 
+   */
+  export function recatchSync<T, E>(callback: () => Result<T, E>): Result<T, Catched | E> {
+    try {
+      return callback()
+    } catch (e: unknown) {
+      return new Err(Catched.from(e))
+    }
+  }
+
+  /**
    * Transform `Iterable<Result<T,E>` into `Result<Array<T>, E>`
    * @param iterable 
    * @returns `Result<Array<T>, E>`
