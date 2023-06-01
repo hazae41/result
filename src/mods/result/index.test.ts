@@ -22,7 +22,7 @@ await test("try-catch", async ({ message }) => {
     throw new Error()
   })), `Should have not been catched`)
 
-  assert(!throws(() => Result.unthrowSync<void, Error>(t => {
+  assert(!throws(() => Result.unthrowSync<Result<void, Error>>(t => {
     new Err(new Error()).throw(t)
 
     return Ok.void()

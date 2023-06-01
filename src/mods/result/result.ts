@@ -68,14 +68,14 @@ export namespace Result {
    * @returns `Ok<T>` if no `Err` was thrown, `Err<E>` otherwise
    * @see Err.throw
    */
-  export async function unthrow<T, E>(callback: (thrower: (e: Err<E>) => void) => Promiseable<Result<T, E>>): Promise<Result<T, E>> {
-    let ref: Err<E> | undefined
+  export async function unthrow<R extends Result.Infer<R>>(callback: (thrower: (e: Err.Infer<R>) => void) => Promiseable<R>): Promise<R> {
+    let ref: Err.Infer<R> | undefined
 
     try {
-      return await callback((e: Err<E>) => ref = e)
+      return await callback((e: Err.Infer<R>) => ref = e)
     } catch (e: unknown) {
       if (ref !== undefined)
-        return ref
+        return ref as R
       throw e
     }
   }
@@ -87,14 +87,14 @@ export namespace Result {
    * @returns `Ok<T>` if no `Err` was thrown, `Err<E>` otherwise
    * @see Err.throw
    */
-  export function unthrowSync<T, E>(callback: (thrower: (e: Err<E>) => void) => Result<T, E>): Result<T, E> {
-    let ref: Err<E> | undefined
+  export function unthrowSync<R extends Result.Infer<R>>(callback: (thrower: (e: Err.Infer<R>) => void) => R): R {
+    let ref: Err.Infer<R> | undefined
 
     try {
-      return callback((e: Err<E>) => ref = e)
+      return callback((e: Err.Infer<R>) => ref = e)
     } catch (e: unknown) {
       if (ref !== undefined)
-        return ref
+        return ref as R
       throw e
     }
   }
