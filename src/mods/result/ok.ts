@@ -279,6 +279,14 @@ export class Ok<T = unknown>  {
   }
 
   /**
+   * Transform Result<T, Promise<E>> into Promise<Result<T, E>>
+   * @returns `await this.inner` if `Err`, `this` if `Ok`
+   */
+  async awaitErr(): Promise<this> {
+    return this
+  }
+
+  /**
    * Transform `Result<T, E>` into `Result<void, E>`
    * @returns `Ok<void>` if `Ok<T>`, `Err<E>` if `E<E>`
    */
