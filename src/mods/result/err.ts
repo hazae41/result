@@ -317,6 +317,14 @@ export class Err<T = unknown>  {
   }
 
   /**
+   * Transform Result<Promise<T>, Promise<E>> into Promise<Result<T, E>>
+   * @returns `await this.inner`
+   */
+  async awaitAll(): Promise<Err<Awaited<T>>> {
+    return await this.awaitErr()
+  }
+
+  /**
    * Transform `Result<T, E>` into `Result<void, E>`
    * @returns `Ok<void>` if `Ok<T>`, `Err<E>` if `E<E>`
    */
