@@ -381,6 +381,24 @@ export class Err<T = unknown>  {
   }
 
   /**
+   * Return a new `Ok` but with the given `inner`
+   * @param inner 
+   * @returns `Ok(inner)` if `Ok`, `this` if `Err`
+   */
+  set(inner: unknown): this {
+    return this
+  }
+
+  /**
+   * Return a new `Err` but with the given `inner`
+   * @param inner 
+   * @returns `Err(inner)` if `Err`, `this` if `Ok`
+   */
+  setErr<U>(inner: U): Err<U> {
+    return new Err(inner)
+  }
+
+  /**
    * Map the inner value into another
    * @param okMapper 
    * @returns `Ok(await okMapper(this.inner))` if `Ok`, `this` if `Err`
