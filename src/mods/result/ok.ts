@@ -13,15 +13,17 @@ export namespace Ok {
 
 export class Ok<T = unknown>  {
 
+  #inner: T
+
   #timeout?: NodeJS.Timeout
 
   /**
    * A success
    * @param inner 
    */
-  constructor(
-    readonly inner: T
-  ) {
+  constructor(inner: T) {
+    this.#inner = inner
+
     if (!Debug.debug) return
 
     const error = new Panic(`Unhandled result`, { cause: this })
@@ -43,6 +45,10 @@ export class Ok<T = unknown>  {
    */
   static new<T>(inner: T): Ok<T> {
     return new this<T>(inner)
+  }
+
+  get inner() {
+    return this.#inner
   }
 
   /**

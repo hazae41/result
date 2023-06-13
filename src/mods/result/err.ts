@@ -13,15 +13,17 @@ export namespace Err {
 
 export class Err<T = unknown>  {
 
+  #inner: T
+
   #timeout?: NodeJS.Timeout
 
   /**
    * A failure
    * @param inner 
    */
-  constructor(
-    readonly inner: T
-  ) {
+  constructor(inner: T) {
+    this.#inner = inner
+
     if (!Debug.debug) return
 
     const error = new Panic(`Unhandled result`, { cause: this })
@@ -53,6 +55,10 @@ export class Err<T = unknown>  {
    */
   static error(message: string, options?: ErrorOptions): Err<Error> {
     return new this(new Error(message, options))
+  }
+
+  get inner() {
+    return this.#inner
   }
 
   /**
