@@ -1,6 +1,5 @@
 import { None, Some } from "@hazae41/option"
 import { Promiseable } from "libs/promises/promises.js"
-import { Class } from "libs/reflection/reflection.js"
 import { Debug } from "mods/debug/debug.js"
 import { Panic } from "./errors.js"
 
@@ -54,24 +53,6 @@ export class Err<T = unknown>  {
    */
   static error(message: string, options?: ErrorOptions): Err<Error> {
     return new this(new Error(message, options))
-  }
-
-  /**
-   * Try to cast `inner` into one of the `types` and return `Err(inner)`, throw `inner` if unable to do so
-   * @param inner 
-   * @param types
-   * @returns `Err(inner)` if `e` is an `instanceof` one of the `types`
-   * @throws `inner` if unable to do so
-   */
-  static castAndWrapOrThrow<T>(inner: unknown, ...types: Class<T>[]): Err<T> {
-    if (!types.length)
-      return new this(inner) as Err<T>
-
-    for (const type of types)
-      if (inner instanceof type)
-        return new this(inner) as Err<T>
-
-    throw inner
   }
 
   /**
