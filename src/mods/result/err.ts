@@ -35,7 +35,7 @@ export class Err<T = unknown>  {
    * @returns `Err(void)`
    */
   static void(): Err<void> {
-    return new this<void>(undefined)
+    return new Err<void>(undefined)
   }
 
   /**
@@ -44,7 +44,7 @@ export class Err<T = unknown>  {
    * @returns `Err(inner)`
    */
   static new<T>(inner: T): Err<T> {
-    return new this(inner)
+    return new Err(inner)
   }
 
   /**
@@ -54,7 +54,7 @@ export class Err<T = unknown>  {
    * @returns `Err<Error>`
    */
   static error(message: string, options?: ErrorOptions): Err<Error> {
-    return new this(new Error(message, options))
+    return new Err(new Error(message, options))
   }
 
   get inner() {

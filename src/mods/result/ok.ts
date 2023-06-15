@@ -35,7 +35,7 @@ export class Ok<T = unknown>  {
    * @returns `Ok(void)`
    */
   static void(): Ok<void> {
-    return new this<void>(undefined)
+    return new Ok<void>(undefined)
   }
 
   /**
@@ -44,7 +44,7 @@ export class Ok<T = unknown>  {
    * @returns `Ok(inner)`
    */
   static new<T>(inner: T): Ok<T> {
-    return new this<T>(inner)
+    return new Ok<T>(inner)
   }
 
   get inner() {
