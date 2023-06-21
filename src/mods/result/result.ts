@@ -18,7 +18,7 @@ export namespace Result {
     | Err.Infer<T>
 
   /**
-   * Create an Option from a maybe Error value
+   * Create a Result from a maybe Error value
    * @param inner 
    * @returns `Ok<T>` if `T`, `Err<Error>` if `Error`
    */
@@ -27,6 +27,18 @@ export namespace Result {
       return new Err(inner)
     else
       return new Ok(inner)
+  }
+
+  /**
+   * Create a Result from a boolean
+   * @param value 
+   * @returns 
+   */
+  export function assert(value: boolean) {
+    if (value)
+      return new Ok(undefined)
+    else
+      return new Err(undefined)
   }
 
   /**
