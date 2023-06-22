@@ -1,4 +1,4 @@
-import { Option, Some } from "@hazae41/option"
+import { Option, Optional } from "@hazae41/option"
 import { Promiseable } from "libs/promises/promises.js"
 import { Err } from "./err.js"
 import { Catched } from "./errors.js"
@@ -173,7 +173,7 @@ export namespace Result {
     return collect(iterate(iterable))
   }
 
-  export function maybeAll<T, E>(iterable: Iterable<Option<Result<T, E>>>): Option<Result<Array<T>, E>> {
+  export function maybeAll<T, E>(iterable: Iterable<Optional<Result<T, E>>>): Optional<Result<Array<T>, E>> {
     return maybeCollect(maybeIterate(iterable))
   }
 
@@ -193,17 +193,17 @@ export namespace Result {
     return Ok.void()
   }
 
-  export function* maybeIterate<T, E>(iterable: Iterable<Option<Result<T, E>>>): Iterator<T, Option<Result<void, E>>> {
-    for (const option of iterable) {
-      if (option.isNone())
-        return option
-      else if (option.inner.isOk())
-        yield option.inner.get()
+  export function* maybeIterate<T, E>(iterable: Iterable<Optional<Result<T, E>>>): Iterator<T, Optional<Result<void, E>>> {
+    for (const result of iterable) {
+      if (result === undefined)
+        return undefined
+      else if (result.isOk())
+        yield result.get()
       else
-        return new Some(option.inner)
+        return result
     }
 
-    return new Some(Ok.void())
+    return Ok.void()
   }
 
   /**
@@ -221,7 +221,7 @@ export namespace Result {
     return result.value.set(array)
   }
 
-  export function maybeCollect<T, E>(iterator: Iterator<T, Option<Result<void, E>>>): Option<Result<Array<T>, E>> {
+  export function maybeCollect<T, E>(iterator: Iterator<T, Optional<Result<void, E>>>): Optional<Result<Array<T>, E>> {
     const array = new Array<T>()
 
     let result = iterator.next()
@@ -229,7 +229,7 @@ export namespace Result {
     for (; !result.done; result = iterator.next())
       array.push(result.value)
 
-    return result.value.mapSync(result => result.set(array))
+    return Option.mapSync(result.value, result => result.set(array))
   }
 
   /**
