@@ -195,8 +195,8 @@ export namespace Result {
 
   export function* maybeIterate<T, E>(iterable: Iterable<Optional<Result<T, E>>>): Iterator<T, Optional<Result<void, E>>> {
     for (const result of iterable) {
-      if (result === undefined)
-        return undefined
+      if (result == null)
+        return result
       else if (result.isOk())
         yield result.get()
       else
