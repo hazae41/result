@@ -1,4 +1,4 @@
-import { Option, Optional } from "@hazae41/option"
+import { Nullable, Option } from "@hazae41/option"
 import { Awaitable } from "libs/promises/promises.js"
 import { Err } from "./err.js"
 import { AssertError, Catched } from "./errors.js"
@@ -175,7 +175,7 @@ export namespace Result {
     return collect(iterate(iterable))
   }
 
-  export function maybeAll<T, E>(iterable: Iterable<Optional<Result<T, E>>>): Optional<Result<Array<T>, E>> {
+  export function maybeAll<T, E>(iterable: Iterable<Nullable<Result<T, E>>>): Nullable<Result<Array<T>, E>> {
     return maybeCollect(maybeIterate(iterable))
   }
 
@@ -195,7 +195,7 @@ export namespace Result {
     return Ok.void()
   }
 
-  export function* maybeIterate<T, E>(iterable: Iterable<Optional<Result<T, E>>>): Iterator<T, Optional<Result<void, E>>> {
+  export function* maybeIterate<T, E>(iterable: Iterable<Nullable<Result<T, E>>>): Iterator<T, Nullable<Result<void, E>>> {
     for (const result of iterable) {
       if (result == null)
         return result
@@ -223,7 +223,7 @@ export namespace Result {
     return result.value.set(array)
   }
 
-  export function maybeCollect<T, E>(iterator: Iterator<T, Optional<Result<void, E>>>): Optional<Result<Array<T>, E>> {
+  export function maybeCollect<T, E>(iterator: Iterator<T, Nullable<Result<void, E>>>): Nullable<Result<Array<T>, E>> {
     const array = new Array<T>()
 
     let result = iterator.next()
