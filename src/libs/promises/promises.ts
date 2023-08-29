@@ -1,1 +1,2 @@
-export type Promiseable<T> = T | Promise<T>
+export type Awaitable<T> = T | Promise<T> | PromiseLike<T>
+

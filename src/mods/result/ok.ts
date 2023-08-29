@@ -1,7 +1,7 @@
 import { None, Some } from "@hazae41/option"
-import { Promiseable } from "libs/promises/promises.js"
-import { Debug } from "mods/debug/debug.js"
+import { Awaitable } from "libs/promises/promises.js"
 import { Panic } from "./errors.js"
+import { Result } from "./result.js"
 
 export namespace Ok {
 
@@ -24,7 +24,7 @@ export class Ok<T = unknown>  {
   constructor(inner: T) {
     this.#inner = inner
 
-    if (!Debug.debug) return
+    if (!Result.debug) return
 
     const error = new Panic(`Unhandled result`, { cause: this })
     this.#timeout = setTimeout(async () => { throw error }, 1000)
@@ -77,7 +77,7 @@ export class Ok<T = unknown>  {
    * @param okPredicate 
    * @returns `true` if `Ok` and `await okPredicate(this.inner)`, `false` otherwise
    */
-  async isOkAnd(okPredicate: (inner: T) => Promiseable<boolean>): Promise<boolean> {
+  async isOkAnd(okPredicate: (inner: T) => Awaitable<boolean>): Promise<boolean> {
     return await okPredicate(this.inner)
   }
 
@@ -220,7 +220,7 @@ export class Ok<T = unknown>  {
   }
 
   /**
-   * Get the inner value or throw the inner error
+   * Get the inner value or panic
    * @returns `this.inner` if `Ok`
    * @throws `this.inner` if `Err` 
    */
@@ -231,14 +231,14 @@ export class Ok<T = unknown>  {
   }
 
   /**
-   * Throw the inner value or get the inner error
+   * Get the inner error or panic
    * @returns `this.inner` if `Err`
    * @throws `this.inner` if `Ok` 
    */
   unwrapErr(): never {
     this.ignore()
 
-    throw new Panic(undefined, { cause: this.inner })
+    throw new Panic(`Unwrapped`, { cause: this })
   }
 
   /**
@@ -323,7 +323,7 @@ export class Ok<T = unknown>  {
    * @param okCallback 
    * @returns `this`
    */
-  async inspect(okCallback: (inner: T) => Promiseable<void>): Promise<this> {
+  async inspect(okCallback: (inner: T) => Awaitable<void>): Promise<this> {
     await okCallback(this.inner)
     return this
   }
@@ -380,7 +380,7 @@ export class Ok<T = unknown>  {
    * @returns `Ok(await okMapper(this.inner))` if `Ok`, `this` if `Err`
    * @throws if `await okMapper(this.inner)` throws
    */
-  async map<U>(okMapper: (inner: T) => Promiseable<U>): Promise<Ok<U>> {
+  async map<U>(okMapper: (inner: T) => Awaitable<U>): Promise<Ok<U>> {
     this.ignore()
 
     return new Ok<U>(await okMapper(this.inner))
@@ -425,7 +425,7 @@ export class Ok<T = unknown>  {
    * @returns `await okMapper(this.inner)` if `Ok`, `value` if `Err`
    * @throws if `await okMapper(this.inner)` throws
    */
-  async mapOr<U>(value: U, okMapper: (inner: T) => Promiseable<U>): Promise<U> {
+  async mapOr<U>(value: U, okMapper: (inner: T) => Awaitable<U>): Promise<U> {
     this.ignore()
 
     return await okMapper(this.inner)
@@ -451,7 +451,7 @@ export class Ok<T = unknown>  {
    * @returns `await okMapper(this.inner)` if `Ok`, `await errMapper(this.inner)` if `Err`
    * @throws if `await okMapper(this.inner)` or `await errMapper(this.inner)` throws
    */
-  async mapOrElse<U>(errMapper: unknown, okMapper: (inner: T) => Promiseable<U>): Promise<U> {
+  async mapOrElse<U>(errMapper: unknown, okMapper: (inner: T) => Awaitable<U>): Promise<U> {
     this.ignore()
 
     return await okMapper(this.inner)
@@ -487,7 +487,7 @@ export class Ok<T = unknown>  {
    * @returns `await okMapper(this.inner)` if `Ok`, `this` if `Err`
    * @throws if `await okMapper(this.inner)` throws
    */
-  async andThen<U>(okMapper: (inner: T) => Promiseable<U>): Promise<U> {
+  async andThen<U>(okMapper: (inner: T) => Awaitable<U>): Promise<U> {
     this.ignore()
 
     return await okMapper(this.inner)

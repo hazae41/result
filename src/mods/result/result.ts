@@ -1,10 +1,10 @@
 import { Option, Optional } from "@hazae41/option"
-import { Promiseable } from "libs/promises/promises.js"
+import { Awaitable } from "libs/promises/promises.js"
 import { Err } from "./err.js"
-import { Catched } from "./errors.js"
+import { AssertError, Catched } from "./errors.js"
 import { Ok } from "./ok.js"
 
-export interface Wrapper<T = unknown> {
+export interface Unwrappable<T = unknown> {
   unwrap(): T
 }
 
@@ -17,6 +17,8 @@ export namespace Result {
   export type Infer<T> =
     | Ok.Infer<T>
     | Err.Infer<T>
+
+  export let debug = false
 
   /**
    * Create a Result from a maybe Error value
@@ -36,10 +38,7 @@ export namespace Result {
    * @returns 
    */
   export function assert(value: boolean) {
-    if (value)
-      return new Ok(undefined)
-    else
-      return new Err(undefined)
+    return value ? Ok.void() : new Err(new AssertError())
   }
 
   /**
@@ -64,9 +63,9 @@ export namespace Result {
    * Rewrap any object with unwrap() into a Result
    * @param wrapper 
    */
-  export function rewrap<T, E>(wrapper: Wrapper<T>): Result<T, E>
+  export function rewrap<T, E>(wrapper: Unwrappable<T>): Result<T, E>
 
-  export function rewrap<T, E>(wrapper: Wrapper<T>) {
+  export function rewrap<T, E>(wrapper: Unwrappable<T>) {
     try {
       return new Ok(wrapper.unwrap())
     } catch (error: unknown) {
@@ -81,7 +80,7 @@ export namespace Result {
    * @returns `Ok<T>` if no `Err` was thrown, `Err<E>` otherwise
    * @see Err.throw
    */
-  export async function unthrow<R extends Result.Infer<R>>(callback: (thrower: (e: Err.Infer<R>) => void) => Promiseable<R>): Promise<R> {
+  export async function unthrow<R extends Result.Infer<R>>(callback: (thrower: (e: Err.Infer<R>) => void) => Awaitable<R>): Promise<R> {
     let ref: Err.Infer<R> | undefined
 
     try {
@@ -113,55 +112,58 @@ export namespace Result {
   }
 
   /**
-   * Wrap with catching
+   * Convert try-catch to Result<T, unknown>
    * @param callback 
    * @returns 
    */
-  export async function catchAndWrap<T>(callback: () => Promiseable<T>): Promise<Result<T, Catched>> {
+  export async function runAndWrap<T>(callback: () => Awaitable<T>): Promise<Result<T, unknown>> {
     try {
       return new Ok(await callback())
     } catch (e: unknown) {
-      return new Err(Catched.from(e))
+      return new Err(e)
     }
   }
 
   /**
-   * Wrap with catching
+   * Convert try-catch to Result<T, unknown>
    * @param callback 
    * @returns 
    */
-  export function catchAndWrapSync<T>(callback: () => T): Result<T, Catched> {
+  export function runAndWrapSync<T>(callback: () => T): Result<T, unknown> {
     try {
       return new Ok(callback())
     } catch (e: unknown) {
-      return new Err(Catched.from(e))
+      return new Err(e)
     }
   }
 
   /**
-   * Catch
+   * Convert try-catch to Result<T, Catched>
    * @param callback 
    * @returns 
    */
-  export async function recatch<T, E>(callback: () => Promiseable<Result<T, E>>): Promise<Result<T, Catched | E>> {
-    try {
-      return await callback()
-    } catch (e: unknown) {
-      return new Err(Catched.from(e))
-    }
+  export async function runAndDoubleWrap<T>(callback: () => Awaitable<T>): Promise<Result<T, Catched>> {
+    return runAndWrap(callback).then(r => r.mapErrSync(Catched.from))
   }
 
   /**
-   * Catch
+   * Convert try-catch to Result<T, Catched>
    * @param callback 
    * @returns 
    */
-  export function recatchSync<T, E>(callback: () => Result<T, E>): Result<T, Catched | E> {
-    try {
-      return callback()
-    } catch (e: unknown) {
-      return new Err(Catched.from(e))
-    }
+  export function runAndDoubleWrapSync<T>(callback: () => T): Result<T, Catched> {
+    return runAndWrapSync(callback).mapErrSync(Catched.from)
+  }
+
+  /**
+   * Transform Result<Result<T, E1>, E2> into Result<T, E1 | E2>
+   * @param result 
+   * @returns 
+   */
+  export function flatten<T, E1, E2>(result: Result<Result<T, E1>, E2>): Result<T, E1 | E2> {
+    if (result.isErr())
+      return result
+    return result.get()
   }
 
   /**
@@ -233,15 +235,12 @@ export namespace Result {
   }
 
   /**
-   * Call the callback:
-   * - if it throws, wrap the thrown error into `Catched` and throw it
-   * - if the result is `Err`, unwrap it and throw it 
-   * - if the result is `Ok`, unwrap it and return it
+   * Unwrap the callback but wrap thrown errors in Catched
    * @param callback 
    * @returns `T` if `Ok`
    * @throws `Catched` if `callback()` throws, `E` if `Err`
    */
-  export async function catchAndUnwrap<T, E>(callback: () => Promise<Result<T, E>>) {
+  export async function runAndUnwrap<T, E>(callback: () => Promise<Result<T, E>>) {
     let result: Result<T, E>
 
     try {
@@ -254,15 +253,12 @@ export namespace Result {
   }
 
   /**
-   * Call the callback:
-   * - if it throws, wrap the thrown error into `Catched` and throw it
-   * - if the result is `Err`, unwrap it and throw it 
-   * - if the result is `Ok`, unwrap it and return it
+   * Unwrap the callback but wrap thrown errors in Catched
    * @param callback 
    * @returns `T` if `Ok`
    * @throws `Catched` if `callback()` throws, `E` if `Err`
    */
-  export function catchAndUnwrapSync<T, E>(callback: () => Result<T, E>) {
+  export function runAndUnwrapSync<T, E>(callback: () => Result<T, E>) {
     let result: Result<T, E>
 
     try {
@@ -274,15 +270,6 @@ export namespace Result {
     return result.unwrap()
   }
 
-  /**
-   * Rethrow `CatchedError`
-   * @param error 
-   * @returns `Err(error)` if not `CatchedError` 
-   * @throws `error.cause` if `CatchedError` 
-   */
-  export function rethrow(error: unknown) {
-    if (error instanceof Catched)
-      throw error.cause
-    return new Err(error)
-  }
+
+
 }
