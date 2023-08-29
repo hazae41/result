@@ -205,7 +205,7 @@ export class Err<T = unknown>  {
   throw(thrower: (e: Err<T>) => void): never {
     thrower(this)
 
-    throw new Panic(`Thrown result was try-catched`)
+    throw new Panic(`Thrown`, { cause: this })
   }
 
   /**
