@@ -216,7 +216,7 @@ export class Ok<T = unknown>  {
   expectErr(message: string): never {
     this.ignore()
 
-    throw new Panic(message, { cause: this.inner })
+    throw new Panic(message, { cause: this })
   }
 
   /**
