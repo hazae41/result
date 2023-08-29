@@ -26,8 +26,8 @@ export class Ok<T = unknown>  {
 
     if (!Result.debug) return
 
-    const error = new Panic(`Unhandled result`, { cause: this })
-    this.#timeout = setTimeout(async () => { throw error }, 1000)
+    const error = new Panic(`Unhandled`, { cause: this })
+    this.#timeout = setTimeout(() => { throw error }, 1000)
   }
 
   /**
