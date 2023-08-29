@@ -179,7 +179,7 @@ function incrementOrFail(result: Result<number, Error>): number | Error {
 You can easily wrap try-catch patterns, with support for async and sync
 
 ```typescript
-const result = Result.catchAndWrapSync(() => {
+const result = Result.runAndWrapSync(() => {
   if (something)
     return 12345
   else
