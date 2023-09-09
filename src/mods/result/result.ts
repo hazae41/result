@@ -158,7 +158,7 @@ export namespace Result {
   /**
    * Transform Result<Result<T, E1>, E2> into Result<T, E1 | E2>
    * @param result 
-   * @returns 
+   * @returns `this` if `Err`, `this.inner` if `Ok`
    */
   export function flatten<T, E1, E2>(result: Result<Result<T, E1>, E2>): Result<T, E1 | E2> {
     if (result.isErr())
@@ -269,7 +269,5 @@ export namespace Result {
 
     return result.unwrap()
   }
-
-
 
 }

@@ -534,4 +534,13 @@ export class Ok<T = unknown>  {
     return this
   }
 
+  /**
+   * Transform Result<Result<T, E1>, E2> into Result<T, E1 | E2>
+   * @param result 
+   * @returns `this` if `Err`, `this.inner` if `Ok`
+   */
+  flatten() {
+    return this.inner
+  }
+
 }
