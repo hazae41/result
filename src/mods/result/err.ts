@@ -299,7 +299,7 @@ export class Err<T = unknown>  {
    * Transform Result<T, Promise<E>> into Promise<Result<T, E>>
    * @returns `await this.inner` if `Err`, `this` if `Ok`
    */
-  async awaitErr(): Promise<Err<Awaited<T>>> {
+  async awaitErr<T>(this: Err<PromiseLike<T>>): Promise<Err<Awaited<T>>> {
     return new Err(await this.inner)
   }
 
@@ -307,7 +307,7 @@ export class Err<T = unknown>  {
    * Transform Result<Promise<T>, Promise<E>> into Promise<Result<T, E>>
    * @returns `await this.inner`
    */
-  async awaitAll(): Promise<Err<Awaited<T>>> {
+  async awaitAll<T>(this: Err<PromiseLike<T>>): Promise<Err<Awaited<T>>> {
     return await this.awaitErr()
   }
 

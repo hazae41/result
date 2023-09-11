@@ -280,7 +280,7 @@ export class Ok<T = unknown>  {
    * Transform Result<Promise<T>, E> into Promise<Result<T, E>>
    * @returns `await this.inner` if `Ok`, `this` if `Err`
    */
-  async await(): Promise<Ok<Awaited<T>>> {
+  async await<T>(this: Ok<PromiseLike<T>>): Promise<Ok<Awaited<T>>> {
     return new Ok(await this.inner)
   }
 
@@ -296,7 +296,7 @@ export class Ok<T = unknown>  {
    * Transform Result<Promise<T>, Promise<E>> into Promise<Result<T, E>>
    * @returns `await this.inner`
    */
-  async awaitAll(): Promise<Ok<Awaited<T>>> {
+  async awaitAll<T>(this: Ok<PromiseLike<T>>): Promise<Ok<Awaited<T>>> {
     return await this.await()
   }
 
