@@ -26,7 +26,7 @@ export class Err<T = unknown>  {
 
     if (!Result.debug) return
 
-    const error = new Panic(`Unhandled`, { cause: this.inner })
+    const error = Panic.from(new Error(`An Err has not been handled properly`, { cause: this }))
     this.#timeout = setTimeout(() => { throw error }, 1000)
   }
 
@@ -205,7 +205,7 @@ export class Err<T = unknown>  {
   throw(thrower: (e: Err<T>) => void): never {
     thrower(this)
 
-    throw new Panic(`Thrown`, { cause: this })
+    throw Panic.from(new Error(`An Err has been thrown but not catched`, { cause: this }))
   }
 
   /**
@@ -216,7 +216,7 @@ export class Err<T = unknown>  {
   expect(message: string): never {
     this.ignore()
 
-    throw new Panic(message, { cause: this })
+    throw Panic.from(new Error(message, { cause: this }))
   }
 
   /**
@@ -238,7 +238,7 @@ export class Err<T = unknown>  {
   unwrap(): never {
     this.ignore()
 
-    throw new Panic(`Unwrapped`, { cause: this })
+    throw new Panic(new Error(`An Err has been unwrapped`, { cause: this }))
   }
 
   /**

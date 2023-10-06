@@ -26,7 +26,7 @@ export class Ok<T = unknown>  {
 
     if (!Result.debug) return
 
-    const error = new Panic(`Unhandled`, { cause: this })
+    const error = Panic.from(new Error(`An Ok has not been handled properly`, { cause: this }))
     this.#timeout = setTimeout(() => { throw error }, 1000)
   }
 
@@ -216,7 +216,7 @@ export class Ok<T = unknown>  {
   expectErr(message: string): never {
     this.ignore()
 
-    throw new Panic(message, { cause: this })
+    throw Panic.from(new Error(message, { cause: this }))
   }
 
   /**
@@ -238,7 +238,7 @@ export class Ok<T = unknown>  {
   unwrapErr(): never {
     this.ignore()
 
-    throw new Panic(`Unwrapped`, { cause: this })
+    throw Panic.from(new Error(`An Ok has been unwrapped`, { cause: this }))
   }
 
   /**
