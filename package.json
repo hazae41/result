@@ -9,11 +9,12 @@
   "license": "MIT",
   "main": "./dist/cjs/index.cjs",
   "module": "./dist/esm/index.mjs",
-  "types": "./dist/esm/index.d.ts",
+  "types": "./dist/types/index.d.ts",
   "sideEffects": false,
   "files": [
     "./dist/esm",
-    "./dist/cjs"
+    "./dist/cjs",
+    "./dist/types"
   ],
   "scripts": {
     "build": "rimraf dist && rollup -c",
@@ -21,20 +22,21 @@
     "prepare": "npm run build"
   },
   "dependencies": {
-    "@hazae41/option": "^1.0.22"
+    "@hazae41/option": "^1.0.23"
   },
   "devDependencies": {
     "@hazae41/phobos": "^1.0.10",
     "@hazae41/rimraf": "^1.0.1",
     "@rollup/plugin-typescript": "^11.1.5",
-    "@types/node": "^20.8.2",
-    "rollup": "^4.0.0",
+    "@types/node": "^20.8.3",
+    "rollup": "^4.0.2",
+    "rollup-plugin-dts": "^6.1.0",
     "rollup-plugin-node-externals": "^6.1.2",
     "typescript": "^5.2.2"
   },
   "exports": {
     ".": {
-      "types": "./dist/esm/index.d.ts",
+      "types": "./dist/types/index.d.ts",
       "import": "./dist/esm/index.mjs",
       "require": "./dist/cjs/index.cjs"
     }
