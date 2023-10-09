@@ -25,17 +25,17 @@ export const config = [
   {
     input: "./src/index.ts",
     output: [{
-      dir: "./dist/pretypes",
+      dir: "./dist/.dump",
       format: "esm",
       exports: "named",
       preserveModules: true,
       sourcemap: false,
-      entryFileNames: "[name].d.ts",
+      entryFileNames: "[name].mjs",
     }],
-    plugins: [externals(), ts({ declaration: true, emitDeclarationOnly: true, declarationDir: "./dist/pretypes" })]
+    plugins: [externals(), ts({ declaration: true, declarationDir: "./dist/.dump" })]
   },
   {
-    input: "./dist/pretypes/index.d.ts",
+    input: "./dist/.dump/index.d.ts",
     output: [{
       dir: "./dist/types",
       format: "esm",
@@ -44,7 +44,8 @@ export const config = [
       sourcemap: false,
       entryFileNames: "[name].ts",
     }],
-    plugins: [externals(), dts()]
+    plugins: [externals(), dts()],
+    external: [/^lib/]
   },
   {
     input: "./src/index.test.ts",
