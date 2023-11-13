@@ -1,6 +1,5 @@
 import { None, Some } from "@hazae41/option"
 import { Awaitable } from "libs/promises/promises.js"
-import { Panic } from "./errors.js"
 import { Result } from "./result.js"
 
 export namespace Ok {
@@ -26,7 +25,7 @@ export class Ok<T = unknown>  {
 
     if (!Result.debug) return
 
-    const error = Panic.from(new Error(`An Ok has not been handled properly`, { cause: this }))
+    const error = new Error(`An Ok has not been handled properly`)
     this.#timeout = setTimeout(() => { throw error }, 1000)
   }
 
@@ -216,7 +215,7 @@ export class Ok<T = unknown>  {
   expectErr(message: string): never {
     this.ignore()
 
-    throw Panic.from(new Error(message, { cause: this }))
+    throw new Error(message, { cause: this.inner })
   }
 
   /**
@@ -238,7 +237,7 @@ export class Ok<T = unknown>  {
   unwrapErr(): never {
     this.ignore()
 
-    throw Panic.from(new Error(`An Ok has been unwrapped`, { cause: this }))
+    throw this.inner
   }
 
   /**
