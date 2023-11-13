@@ -24,16 +24,12 @@ export class Panic extends Error {
   readonly #class = Panic
   readonly name = this.#class.name
 
-  constructor(options?: ErrorOptions) {
-    super(`Something was not expected`, options)
-  }
-
   static from(cause: unknown) {
-    return new Panic({ cause })
+    return new Panic(`Something was not expected`, { cause })
   }
 
   static fromAndThrow(cause: unknown): never {
-    throw new Panic({ cause })
+    throw new Panic(`Something was not expected`, { cause })
   }
 
 }
