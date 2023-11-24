@@ -112,7 +112,7 @@ export namespace Result {
   }
 
   /**
-   * Run a callback and wrap any returned value in Ok and any thrown error in Err<unknown>
+   * Run a callback and wrap any returned value in Ok<T> and any thrown error in Err<unknown>
    * @param callback 
    * @returns 
    */
@@ -125,7 +125,7 @@ export namespace Result {
   }
 
   /**
-   * Run a callback and wrap any returned value in Ok and any thrown error in Err<unknown>
+   * Run a callback and wrap any returned value in Ok<T> and any thrown error in Err<unknown>
    * @param callback 
    * @returns 
    */
@@ -138,7 +138,7 @@ export namespace Result {
   }
 
   /**
-   * Run a callback and wrap any returned value in Ok and any thrown error in Err<Catched>
+   * Run a callback and wrap any returned value in Ok<T> and any thrown error in Err<Catched>
    * @param callback 
    * @returns 
    */
@@ -151,7 +151,7 @@ export namespace Result {
   }
 
   /**
-   * Run a callback and wrap any returned value in Ok and any thrown error in Err<Catched>
+   * Run a callback and wrap any returned value in Ok<T> and any thrown error in Err<Catched>
    * @param callback 
    * @returns 
    */
