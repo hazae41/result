@@ -112,7 +112,7 @@ export namespace Result {
   }
 
   /**
-   * Convert try-catch to Result<T, unknown>
+   * Run a callback and wrap any returned value in Ok and any thrown error in Err<unknown>
    * @param callback 
    * @returns 
    */
@@ -125,7 +125,7 @@ export namespace Result {
   }
 
   /**
-   * Convert try-catch to Result<T, unknown>
+   * Run a callback and wrap any returned value in Ok and any thrown error in Err<unknown>
    * @param callback 
    * @returns 
    */
@@ -138,32 +138,81 @@ export namespace Result {
   }
 
   /**
-   * Convert try-catch to Result<T, Catched>
+   * Run a callback and wrap any returned value in Ok and any thrown error in Err<Catched>
    * @param callback 
    * @returns 
    */
   export async function runAndDoubleWrap<T>(callback: () => Awaitable<T>): Promise<Result<T, Catched>> {
-    return runAndWrap(callback).then(r => r.mapErrSync(Catched.from))
+    try {
+      return new Ok(await callback())
+    } catch (e: unknown) {
+      return new Err(Catched.from(e))
+    }
   }
 
   /**
-   * Convert try-catch to Result<T, Catched>
+   * Run a callback and wrap any returned value in Ok and any thrown error in Err<Catched>
    * @param callback 
    * @returns 
    */
   export function runAndDoubleWrapSync<T>(callback: () => T): Result<T, Catched> {
-    return runAndWrapSync(callback).mapErrSync(Catched.from)
+    try {
+      return new Ok(callback())
+    } catch (e: unknown) {
+      return new Err(Catched.from(e))
+    }
   }
 
   /**
-   * Transform Result<Result<T, E1>, E2> into Result<T, E1 | E2>
-   * @param result 
-   * @returns `this` if `Err`, `this.inner` if `Ok`
+   * Run a callback and wrap any thrown error in Err<unknown>
+   * @param callback 
+   * @returns 
    */
-  export function flatten<T, E1, E2>(result: Result<Result<T, E1>, E2>): Result<T, E1 | E2> {
-    if (result.isErr())
-      return result
-    return result.get()
+  export async function runOrWrap<R extends Result.Infer<R>>(callback: () => Awaitable<R>): Promise<R | Err<unknown>> {
+    try {
+      return await callback()
+    } catch (e: unknown) {
+      return new Err(e)
+    }
+  }
+
+  /**
+   * Run a callback and wrap any thrown error in Err<unknown>
+   * @param callback 
+   * @returns 
+   */
+  export function runOrWrapSync<R extends Result.Infer<R>>(callback: () => R): R | Err<unknown> {
+    try {
+      return callback()
+    } catch (e: unknown) {
+      return new Err(e)
+    }
+  }
+
+  /**
+   * Run a callback and wrap any thrown error in Err<unknown>
+   * @param callback 
+   * @returns 
+   */
+  export async function runOrDoubleWrap<R extends Result.Infer<R>>(callback: () => Awaitable<R>): Promise<R | Err<Catched>> {
+    try {
+      return await callback()
+    } catch (e: unknown) {
+      return new Err(Catched.from(e))
+    }
+  }
+
+  /**
+   * Run a callback and wrap any thrown error in Err<unknown>
+   * @param callback 
+   * @returns 
+   */
+  export function runOrDoubleWrapSync<R extends Result.Infer<R>>(callback: () => R): R | Err<Catched> {
+    try {
+      return callback()
+    } catch (e: unknown) {
+      return new Err(Catched.from(e))
+    }
   }
 
   /**
@@ -232,42 +281,6 @@ export namespace Result {
       array.push(result.value)
 
     return Option.mapSync(result.value, result => result.set(array))
-  }
-
-  /**
-   * Unwrap the callback but wrap thrown errors in Catched
-   * @param callback 
-   * @returns `T` if `Ok`
-   * @throws `Catched` if `callback()` throws, `E` if `Err`
-   */
-  export async function runAndUnwrap<T, E>(callback: () => Promise<Result<T, E>>) {
-    let result: Result<T, E>
-
-    try {
-      result = await callback()
-    } catch (e: unknown) {
-      throw Catched.from(e)
-    }
-
-    return result.unwrap()
-  }
-
-  /**
-   * Unwrap the callback but wrap thrown errors in Catched
-   * @param callback 
-   * @returns `T` if `Ok`
-   * @throws `Catched` if `callback()` throws, `E` if `Err`
-   */
-  export function runAndUnwrapSync<T, E>(callback: () => Result<T, E>) {
-    let result: Result<T, E>
-
-    try {
-      result = callback()
-    } catch (e: unknown) {
-      throw Catched.from(e)
-    }
-
-    return result.unwrap()
   }
 
 }
