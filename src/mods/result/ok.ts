@@ -1,5 +1,6 @@
 import { None, Some } from "@hazae41/option"
 import { Awaitable } from "libs/promises/promises.js"
+import { Panic } from "./errors.js"
 import { Result } from "./result.js"
 
 export namespace Ok {
@@ -10,7 +11,7 @@ export namespace Ok {
 
 }
 
-export class Ok<T = unknown>  {
+export class Ok<T = unknown> {
 
   #inner: T
 
@@ -116,13 +117,23 @@ export class Ok<T = unknown>  {
   }
 
   /**
-   * Compile-time safely get `this.inner`
+   * Compile-time safely get Ok's inner type
    * @returns `this.inner`
+   * @throws if `this` is `Err`
    */
-  get() {
+  get(): T {
     this.ignore()
 
     return this.inner
+  }
+
+  /**
+   * Compile-time safely get Err's inner type
+   * @returns `this.inner`
+   * @throws if `this` is `Ok`
+   */
+  getErr(this: never) {
+    throw new Panic()
   }
 
   /**

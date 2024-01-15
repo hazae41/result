@@ -3,8 +3,11 @@ import { Err } from "./err.js";
 import { Ok } from "./ok.js";
 import { Result } from "./result.js";
 
-function doNotRun(result: Result<Result<string, DOMException>, TypeError>): Result<string, DOMException | TypeError> {
-  return result.flatten()
+function get(result: Result<string, Error>) {
+  if (result.isOk())
+    return result.get()
+  // if (result.isErr())
+  // return result.get()
 }
 
 class CustomError extends Error {
