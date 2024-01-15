@@ -132,7 +132,7 @@ export class Ok<T = unknown> {
    * @returns `this.inner`
    * @throws if `this` is `Ok`
    */
-  getErr(this: never) {
+  getErr(this: never): never {
     throw new Panic()
   }
 
