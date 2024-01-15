@@ -7,7 +7,7 @@ function get(result: Result<string, Error>) {
   if (result.isOk())
     return result.get()
   // if (result.isErr())
-  // return result.get()
+  //   return result.get()
 }
 
 class CustomError extends Error {
