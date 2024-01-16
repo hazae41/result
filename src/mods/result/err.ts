@@ -131,7 +131,7 @@ export class Err<T = unknown> {
    * @returns `this.inner`
    * @throws if `this` is `Err`
    */
-  get(this: Err<never>): never {
+  get(this: [T] extends [never] ? unknown : never): never {
     throw new Panic()
   }
 
