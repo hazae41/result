@@ -1,7 +1,7 @@
 import { Nullable, Option } from "@hazae41/option"
 import { Awaitable } from "libs/promises/promises.js"
 import { Err } from "./err.js"
-import { AssertError, Catched } from "./errors.js"
+import { Catched } from "./errors.js"
 import { Ok } from "./ok.js"
 
 export interface Unwrappable<T = unknown> {
@@ -38,7 +38,7 @@ export namespace Result {
    * @returns 
    */
   export function assert(value: boolean) {
-    return value ? Ok.void() : new Err(new AssertError())
+    return value ? Ok.void() : Err.void()
   }
 
   /**
@@ -142,11 +142,11 @@ export namespace Result {
    * @param callback 
    * @returns 
    */
-  export async function runAndDoubleWrap<T>(callback: () => Awaitable<T>): Promise<Result<T, Catched>> {
+  export async function runAndDoubleWrap<T>(callback: () => Awaitable<T>): Promise<Result<T, Error>> {
     try {
       return new Ok(await callback())
     } catch (e: unknown) {
-      return new Err(Catched.from(e))
+      return new Err(Catched.wrap(e))
     }
   }
 
@@ -155,11 +155,11 @@ export namespace Result {
    * @param callback 
    * @returns 
    */
-  export function runAndDoubleWrapSync<T>(callback: () => T): Result<T, Catched> {
+  export function runAndDoubleWrapSync<T>(callback: () => T): Result<T, Error> {
     try {
       return new Ok(callback())
     } catch (e: unknown) {
-      return new Err(Catched.from(e))
+      return new Err(Catched.wrap(e))
     }
   }
 
@@ -194,11 +194,11 @@ export namespace Result {
    * @param callback 
    * @returns 
    */
-  export async function runOrDoubleWrap<R extends Result.Infer<R>>(callback: () => Awaitable<R>): Promise<R | Err<Catched>> {
+  export async function runOrDoubleWrap<R extends Result.Infer<R>>(callback: () => Awaitable<R>): Promise<R | Err<Error>> {
     try {
       return await callback()
     } catch (e: unknown) {
-      return new Err(Catched.from(e))
+      return new Err(Catched.wrap(e))
     }
   }
 
@@ -207,11 +207,11 @@ export namespace Result {
    * @param callback 
    * @returns 
    */
-  export function runOrDoubleWrapSync<R extends Result.Infer<R>>(callback: () => R): R | Err<Catched> {
+  export function runOrDoubleWrapSync<R extends Result.Infer<R>>(callback: () => R): R | Err<Error> {
     try {
       return callback()
     } catch (e: unknown) {
-      return new Err(Catched.from(e))
+      return new Err(Catched.wrap(e))
     }
   }
 
