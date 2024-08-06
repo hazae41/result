@@ -8,9 +8,18 @@ export interface Unwrappable<T = unknown> {
   unwrap(): T
 }
 
+/**
+ * An object that can be either an Ok or an Err
+ */
 export type Result<T = unknown, E = unknown> =
   | Ok<T>
   | Err<E>
+
+/**
+ * A result whose Ok type is the same as its Err type
+ * @example An `update<T>(): Fallback<T>` will return `Ok<T>` if an update was found and `Err<T>` if not
+ */
+export type Fallback<T> = Result<T, T>
 
 export namespace Result {
 

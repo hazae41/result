@@ -147,6 +147,16 @@ export class Err<T = unknown> {
   }
 
   /**
+   * Get inner type
+   * @returns 
+   */
+  getAny(): T {
+    this.ignore()
+
+    return this.inner
+  }
+
+  /**
    * Transform `Result<T, E>` into `Option<T>`
    * @returns `Some(this.inner)` if `Ok`, `None` if `Err`
    */
