@@ -310,7 +310,7 @@ export class Err<T = unknown> {
    * Get this if Ok or throw the inner error
    * @returns 
    */
-  check() {
+  check(): never {
     this.ignore()
 
     throw this.inner
@@ -320,7 +320,7 @@ export class Err<T = unknown> {
    * Get this if Err or throw the inner value
    * @returns 
    */
-  checkErr() {
+  checkErr(): this {
     this.ignore()
 
     return this
