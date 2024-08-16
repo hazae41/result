@@ -239,6 +239,8 @@ export class Ok<T = unknown> {
     throw new Error(message, { cause: this.inner })
   }
 
+
+
   /**
    * Get the inner value or panic
    * @returns `this.inner` if `Ok`
@@ -294,6 +296,25 @@ export class Ok<T = unknown> {
     this.ignore()
 
     return this.inner
+  }
+
+  /**
+   * Get this if Ok or throw the inner error
+   * @returns 
+   */
+  check() {
+    this.ignore()
+
+    return this
+  }
+
+  /**
+   * Get this if Err or throw the inner value
+   */
+  checkErr() {
+    this.ignore()
+
+    throw this.inner
   }
 
   /**

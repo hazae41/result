@@ -307,6 +307,26 @@ export class Err<T = unknown> {
   }
 
   /**
+   * Get this if Ok or throw the inner error
+   * @returns 
+   */
+  check() {
+    this.ignore()
+
+    throw this.inner
+  }
+
+  /**
+   * Get this if Err or throw the inner value
+   * @returns 
+   */
+  checkErr() {
+    this.ignore()
+
+    return this
+  }
+
+  /**
    * Transform Result<Promise<T>, E> into Promise<Result<T, E>>
    * @returns `await this.inner` if `Ok`, `this` if `Err`
    */
