@@ -3,11 +3,11 @@ import { Err } from "./err.js";
 import { Ok } from "./ok.js";
 import { Result } from "./result.js";
 
-function get(result: Result<string, Error>) {
+function get(result: Result<string, never>) {
   if (result.isOk())
     return result.get()
-  // if (result.isErr())
-  //   return result.get()
+  if (result.isErr())
+    return result.get()
 }
 
 class CustomError extends Error {
@@ -28,7 +28,7 @@ await test("try-catch", async ({ message }) => {
     new Err(new Error()).throw(t)
 
     return Ok.void()
-  }).ignore()), `Should have been catched`)
+  })), `Should have been catched`)
 
   console.log(message)
 })
@@ -48,8 +48,8 @@ function* errGenerator() {
 }
 
 await test("iterators", async () => {
-  const ok = Result.all(okGenerator()).ignore()
-  const err = Result.all(errGenerator()).ignore()
+  const ok = Result.all(okGenerator())
+  const err = Result.all(errGenerator())
 
   assert(ok.isOkAndSync(inner => JSON.stringify(inner) === JSON.stringify([1, 2, 3, 4])))
   assert(err.isErrAndSync(inner => inner === 3))

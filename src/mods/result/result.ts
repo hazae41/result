@@ -1,11 +1,11 @@
-import { Nullable, Option } from "@hazae41/option"
+import { Nullable } from "@hazae41/option"
 import { Awaitable } from "libs/promises/promises.js"
 import { Err } from "./err.js"
 import { Catched } from "./errors.js"
 import { Ok } from "./ok.js"
 
 export interface Unwrappable<T = unknown> {
-  unwrap(): T
+  getOrThrow(): T
 }
 
 /**
@@ -26,8 +26,6 @@ export namespace Result {
   export type Infer<T> =
     | Ok.Infer<T>
     | Err.Infer<T>
-
-  export let debug = false
 
   /**
    * Create a Result from a maybe Error value
@@ -69,14 +67,14 @@ export namespace Result {
   export function rewrap<T extends Result.Infer<T>>(wrapper: T): Result<Ok.Inner<T>, Err.Inner<T>>
 
   /**
-   * Rewrap any object with unwrap() into a Result
+   * Rewrap any object with getOrThrow() into a Result
    * @param wrapper 
    */
   export function rewrap<T, E>(wrapper: Unwrappable<T>): Result<T, E>
 
   export function rewrap<T, E>(wrapper: Unwrappable<T>) {
     try {
-      return new Ok(wrapper.unwrap())
+      return new Ok(wrapper.getOrThrow())
     } catch (error: unknown) {
       return new Err(error as E)
     }
@@ -289,7 +287,10 @@ export namespace Result {
     for (; !result.done; result = iterator.next())
       array.push(result.value)
 
-    return Option.mapSync(result.value, result => result.set(array))
+    if (result.value == null)
+      return
+
+    return result.value.set(array)
   }
 
 }
