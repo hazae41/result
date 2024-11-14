@@ -184,7 +184,7 @@ export class Ok<T = unknown> {
   }
 
   /**
-   * Get the inner value or panic
+   * Get the inner value if Ok or throw the inner error
    * @returns `this.inner` if `Ok`
    * @throws `this.inner` if `Err` 
    */
@@ -193,12 +193,28 @@ export class Ok<T = unknown> {
   }
 
   /**
-   * Get the inner error or panic
+   * Get the inner error if Err or throw the inner value
    * @returns `this.inner` if `Err`
    * @throws `this.inner` if `Ok` 
    */
   getErrOrThrow(): never {
     throw this.inner
+  }
+
+  /**
+   * Get the inner value if Ok or null if Err
+   * @returns `this.inner` if `Ok`, `null` if `Err`
+   */
+  getOrNull(): T {
+    return this.inner
+  }
+
+  /**
+   * Get the inner error if Err or null if Ok
+   * @returns `this.inner` if `Err`, `null` if `Ok`
+   */
+  getErrOrNull(): null {
+    return null
   }
 
   /**
@@ -243,6 +259,21 @@ export class Ok<T = unknown> {
    */
   checkErrOrThrow(): never {
     throw this.inner
+  }
+
+  /**
+   * Get this if Ok or return null
+   * @returns 
+   */
+  checkOrNull(): this {
+    return this
+  }
+
+  /**
+   * Get this if Err or return null
+   */
+  checkErrOrNull(): null {
+    return null
   }
 
   /**
