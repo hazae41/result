@@ -54,6 +54,15 @@ export class Err<T = unknown> {
     return this.#inner
   }
 
+  [Symbol.dispose](this: Err<Disposable>) {
+    this.#inner[Symbol.dispose]()
+  }
+
+  async [Symbol.asyncDispose](this: Err<AsyncDisposable>) {
+    await this.#inner[Symbol.asyncDispose]()
+  }
+
+
   /**
    * Type guard for `Ok`
    * @returns `true` if `Ok`, `false` if `Err`

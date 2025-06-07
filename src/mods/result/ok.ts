@@ -44,6 +44,14 @@ export class Ok<T = unknown> {
     return this.#inner
   }
 
+  [Symbol.dispose](this: Ok<Disposable>) {
+    this.#inner[Symbol.dispose]()
+  }
+
+  async [Symbol.asyncDispose](this: Ok<AsyncDisposable>) {
+    await this.#inner[Symbol.asyncDispose]()
+  }
+
   /**
    * Type guard for `Ok`
    * @returns `true` if `Ok`, `false` if `Err`
