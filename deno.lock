@@ -1,0 +1,11 @@
+{
+  "version": "5",
+  "specifiers": {
+    "npm:@hazae41/phobos@*": "1.0.10"
+  },
+  "npm": {
+    "@hazae41/phobos@1.0.10": {
+      "integrity": "sha512-ZCZx2YXnRAmMxQhBSg1/GW3wll8UVXGJm8ADWaGk9sJRnXE0zISAHz1mRZIHXHAq+MUBOQF7d6AeCAckc2xYlQ=="
+    }
+  }
+}

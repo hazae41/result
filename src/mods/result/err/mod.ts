@@ -49,7 +49,7 @@ export class Err<T = unknown> {
     return new Err(new Error(message, options))
   }
 
-  get inner() {
+  get inner(): T {
     return this.#inner
   }
 
@@ -128,7 +128,7 @@ export class Err<T = unknown> {
    * @returns `this.inner`
    * @throws if `this` is `Ok`
    */
-  getErr() {
+  getErr(): T {
     return this.inner
   }
 
@@ -542,7 +542,7 @@ export class Err<T = unknown> {
    * @param result 
    * @returns `this` if `Err`, `this.inner` if `Ok`
    */
-  flatten() {
+  flatten(): this {
     return this
   }
 

@@ -33,7 +33,7 @@ export namespace Result {
    * @param inner 
    * @returns `Ok<T>` if `T`, `Err<Error>` if `Error`
    */
-  export function from<T>(inner: T | Error) {
+  export function from<T>(inner: T | Error): Ok<T> | Err<Error> {
     if (inner instanceof Error)
       return new Err(inner)
     else
@@ -45,7 +45,7 @@ export namespace Result {
    * @param value 
    * @returns 
    */
-  export function assert(value: boolean) {
+  export function assert(value: boolean): Ok<void> | Err<void> {
     return value ? Ok.void() : Err.void()
   }
 

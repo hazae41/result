@@ -1,3 +1,4 @@
+// deno-lint-ignore-file
 import { Option } from "./option/mod.ts";
 import { Some } from "./some/mod.ts";
 

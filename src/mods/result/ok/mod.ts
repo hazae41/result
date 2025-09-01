@@ -39,7 +39,7 @@ export class Ok<T = unknown> {
     return new Ok<T>(inner)
   }
 
-  get inner() {
+  get inner(): T {
     return this.#inner
   }
 
@@ -90,7 +90,7 @@ export class Ok<T = unknown> {
    * @param _errPredicate 
    * @returns `true` if `Err` and `await errPredicate(this.inner)`, `false` otherwise
    */
-  async isErrAnd(_errPredicate: unknown): Promise<false> {
+  isErrAnd(_errPredicate: unknown): false {
     return false
   }
 
@@ -239,7 +239,7 @@ export class Ok<T = unknown> {
    * @returns `this.inner` if `Ok`, `await errMapper(this.inner)` if `Err`
    * @throws if `await errMapper(this.inner)` throws
    */
-  async getOrElse(_errMapper: unknown): Promise<T> {
+  getOrElse(_errMapper: unknown): T {
     return this.inner
   }
 
@@ -295,7 +295,7 @@ export class Ok<T = unknown> {
    * Transform Result<T, Promise<E>> into Promise<Result<T, E>>
    * @returns `await this.inner` if `Err`, `this` if `Ok`
    */
-  async awaitErr(): Promise<this> {
+  awaitErr(): this {
     return this
   }
 
@@ -348,7 +348,7 @@ export class Ok<T = unknown> {
    * @param _errCallback 
    * @returns `this`
    */
-  async inspectErr(_errCallback: unknown): Promise<this> {
+  inspectErr(_errCallback: unknown): this {
     return this
   }
 
@@ -405,7 +405,7 @@ export class Ok<T = unknown> {
    * @returns `Err(await errMapper(this.inner))` if `Err`, `this` if `Ok`
    * @throws if `await errMapper(this.inner)` throws
    */
-  async mapErr(_errMapper: unknown): Promise<this> {
+  mapErr(_errMapper: unknown): this {
     return this
   }
 
@@ -507,7 +507,7 @@ export class Ok<T = unknown> {
    * @returns `await errMapper(this.inner)` if `Err`, `this` if `Ok`
    * @throws if `await errMapper(this.inner)` throws
    */
-  async orElse(_errMapper: unknown): Promise<this> {
+  orElse(_errMapper: unknown): this {
     return this
   }
 
@@ -526,7 +526,7 @@ export class Ok<T = unknown> {
    * @param result 
    * @returns `this` if `Err`, `this.inner` if `Ok`
    */
-  flatten() {
+  flatten(): T {
     return this.inner
   }
 

@@ -1,7 +1,6 @@
-import { assert, test, throws } from "@hazae41/phobos";
-import { Err } from "./err.js";
-import { Ok } from "./ok.js";
-import { Result } from "./result.js";
+// deno-lint-ignore-file
+import { Err, Ok, Result } from "@/mods/result/mod.ts";
+import { assert, test, throws } from "npm:@hazae41/phobos";
 
 function get(result: Result<string, never>) {
   if (result.isOk())
