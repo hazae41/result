@@ -1,0 +1,12 @@
+{
+  "name": "@hazae41/result-and-option",
+  "version": "2.0.0",
+  "imports": {
+    "@/": "./src/"
+  },
+  "exports": {
+    ".": "./src/mod.ts",
+    "./result": "./src/mods/result/mod.ts",
+    "./option": "./src/mods/option/mod.ts"
+  }
+}

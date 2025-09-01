@@ -1,8 +1,8 @@
-import { Nullable } from "@hazae41/option"
-import { Awaitable } from "libs/promises/promises.js"
-import { Err } from "./err.js"
-import { Catched } from "./errors.js"
-import { Ok } from "./ok.js"
+import type { Awaitable } from "@/libs/awaitable/mod.ts";
+import type { Nullable } from "@/libs/nullable/mod.ts";
+import { Catched } from "../catched/mod.ts";
+import { Err } from "../err/mod.ts";
+import { Ok } from "../ok/mod.ts";
 
 export interface Unwrappable<T = unknown> {
   getOrThrow(): T
@@ -21,6 +21,7 @@ export type Result<T = unknown, E = unknown> =
  */
 export type Fallback<T> = Result<T, T>
 
+// deno-lint-ignore no-namespace
 export namespace Result {
 
   export type Infer<T> =
