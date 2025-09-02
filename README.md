@@ -3,7 +3,7 @@
 Rust-like Result and Option for TypeScript
 
 ```bash
-deno add jsr:@hazae41/result-and-option
+deno install jsr:@hazae41/result-and-option
 ```
 
 [**JSR Package 📦**](https://jsr.io/@hazae41/result-and-option)
