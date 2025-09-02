@@ -53,3 +53,10 @@ await test("iterators", async () => {
   assert(ok.isOkAndSync(inner => JSON.stringify(inner) === JSON.stringify([1, 2, 3, 4])))
   assert(err.isErrAndSync(inner => inner === 3))
 })
+
+console.log("done")
+
+Deno.test("result", async () => {
+  assert(new Ok(1).isOk())
+  assert(new Err(1).isErr())
+})
