@@ -1,7 +1,13 @@
 {
   "version": "5",
   "specifiers": {
+    "jsr:@hazae41/phobos@*": "2.0.0",
     "npm:@hazae41/phobos@*": "1.0.10"
+  },
+  "jsr": {
+    "@hazae41/phobos@2.0.0": {
+      "integrity": "ee7a838cc84ce85b5004236cfd487524765fca9bf7ab4f0332074faecdddfa43"
+    }
   },
   "npm": {
     "@hazae41/phobos@1.0.10": {

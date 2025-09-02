@@ -1,6 +1,6 @@
 // deno-lint-ignore-file
 import { Err, Ok, Result } from "@/mods/result/mod.ts";
-import { assert, test, throws } from "npm:@hazae41/phobos";
+import { assert, test, throws } from "jsr:@hazae41/phobos";
 
 function get(result: Result<string, never>) {
   if (result.isOk())
@@ -17,7 +17,7 @@ class CustomError extends Error {
   }
 }
 
-await test("try-catch", async ({ message }) => {
+test("try-catch", async ({ name }) => {
 
   assert(throws(() => Result.unthrowSync(t => {
     throw new Error()
@@ -29,7 +29,7 @@ await test("try-catch", async ({ message }) => {
     return Ok.void()
   })), `Should have been catched`)
 
-  console.log(message)
+  console.log(name)
 })
 
 function* okGenerator() {
@@ -46,17 +46,10 @@ function* errGenerator() {
   yield new Ok(4)
 }
 
-await test("iterators", async () => {
+test("iterators", async () => {
   const ok = Result.all(okGenerator())
   const err = Result.all(errGenerator())
 
   assert(ok.isOkAndSync(inner => JSON.stringify(inner) === JSON.stringify([1, 2, 3, 4])))
   assert(err.isErrAndSync(inner => inner === 3))
-})
-
-console.log("done")
-
-Deno.test("result", async () => {
-  assert(new Ok(1).isOk())
-  assert(new Err(1).isErr())
 })
