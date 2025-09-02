@@ -1,12 +1,12 @@
-# Result
+# Result and Option
 
-Rust-like Result for TypeScript
+Rust-like Result and Option for TypeScript
 
 ```bash
-npm i @hazae41/result
+deno add jsr:@hazae41/result-and-option
 ```
 
-[**Node Package 📦**](https://www.npmjs.com/package/@hazae41/result)
+[**JSR Package 📦**](https://jsr.io/@hazae41/result-and-option)
 
 ## Features
 
