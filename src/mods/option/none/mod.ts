@@ -21,7 +21,7 @@ export class None {
    * An empty value
    */
   constructor(
-    readonly inner = undefined
+    readonly inner: undefined = undefined
   ) { }
 
   static create(): None {
