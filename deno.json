@@ -8,5 +8,12 @@
     ".": "./src/mod.ts",
     "./result": "./src/mods/result/mod.ts",
     "./option": "./src/mods/option/mod.ts"
+  },
+  "lint": {
+    "rules": {
+      "exclude": [
+        "no-namespace"
+      ]
+    }
   }
 }

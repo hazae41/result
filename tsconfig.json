@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["./*"]
+    } ,
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "outDir": "./out",
+    "declaration": true,
+    "noCheck": true
+  },
+  "include": [
+    "./src/**/*"
+  ],
+  "exclude": []
+}

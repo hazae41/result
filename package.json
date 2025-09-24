@@ -1,0 +1,25 @@
+{
+  "type": "module",
+  "name": "@hazae41/result-and-option",
+  "description": "Rust-like Result and Option for TypeScript",
+  "version": "2.0.1",
+  "repository": "github:hazae41/result-and-option",
+  "author": "hazae41",
+  "scripts": {
+    "prepare": "rm -rf ./out && tsc && tscousin",
+    "version": "deno -RW ./vsync.ts && git add deno.json"
+  },
+  "files": [
+    "./out"
+  ],
+  "exports": {
+    ".": {
+      "types": "./out/mod.d.ts",
+      "import": "./out/mod.js"
+    }
+  },
+  "devDependencies": {
+    "@hazae41/tscousin": "^1.0.11",
+    "typescript": "^5.9.2"
+  }
+}

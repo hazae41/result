@@ -1,7 +1,6 @@
 import type { Awaitable } from "@/libs/awaitable/mod.ts";
 import { None, Some } from "@/mods/option/mod.ts";
 
-// deno-lint-ignore no-namespace
 export namespace Ok {
 
   export type Infer<T> = Ok<Inner<T>>

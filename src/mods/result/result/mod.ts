@@ -21,7 +21,6 @@ export type Result<T = unknown, E = unknown> =
  */
 export type Fallback<T> = Result<T, T>
 
-// deno-lint-ignore no-namespace
 export namespace Result {
 
   export type Infer<T> =
@@ -255,7 +254,7 @@ export namespace Result {
   export function* maybeIterate<T, E>(iterable: Iterable<Nullable<Result<T, E>>>): Iterator<T, Nullable<Result<void, E>>> {
     for (const result of iterable) {
       if (result == null)
-        return result
+        return
       else if (result.isOk())
         yield result.get()
       else
@@ -274,7 +273,7 @@ export namespace Result {
 
     let result = iterator.next()
 
-    for (; !result.done; result = iterator.next())
+    for (; result.done !== true; result = iterator.next())
       array.push(result.value)
 
     return result.value.set(array)
@@ -285,7 +284,7 @@ export namespace Result {
 
     let result = iterator.next()
 
-    for (; !result.done; result = iterator.next())
+    for (; result.done !== true; result = iterator.next())
       array.push(result.value)
 
     if (result.value == null)
