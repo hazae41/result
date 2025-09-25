@@ -1,6 +1,6 @@
 {
   "name": "@hazae41/result-and-option",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "imports": {
     "@/": "./src/"
   },
