@@ -2,7 +2,7 @@
   "type": "module",
   "name": "@hazae41/result-and-option",
   "description": "Rust-like Result and Option for TypeScript",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "repository": "github:hazae41/result-and-option",
   "author": "hazae41",
   "scripts": {
