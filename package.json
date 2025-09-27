@@ -6,6 +6,7 @@
   "repository": "github:hazae41/result-and-option",
   "author": "hazae41",
   "scripts": {
+    "examine": "deno lint ./src && deno check ./src && deno test ./src",
     "prepare": "rm -rf ./out && tsc && tscousin",
     "version": "deno -RW ./vsync.ts && git add deno.json"
   },
