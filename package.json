@@ -8,7 +8,8 @@
   "scripts": {
     "examine": "deno lint ./src && deno check ./src && deno test ./src",
     "prepare": "rm -rf ./out && tsc && tscousin",
-    "version": "deno -RW ./vsync.ts && git add deno.json"
+    "version": "deno -RW ./!vsync.ts && git add deno.json",
+    "synchro": "deno -RW ./!dsync.ts && deno install"
   },
   "files": [
     "./out"
